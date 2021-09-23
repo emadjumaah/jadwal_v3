@@ -9,7 +9,7 @@ import { checkLicens } from "../common/check";
 import { initServer } from "../common/initServer";
 import { getUserFromToken } from "../connect/helper";
 import { startMongo } from "../connect/mongo";
-import { fileDirectory, imageDirectory, LOCAL_DB_URL } from "../constant";
+import { fileDirectory, imageDirectory } from "../constant";
 import { uploadfile, uploadimage } from "../connect/multer";
 import { createDataDirectories } from "../connect/createDir";
 import { startCronJobs } from "../connect/cron";
@@ -22,7 +22,7 @@ export const runLocalServer = async () => {
     return;
   }
   createDataDirectories();
-  await startMongo(LOCAL_DB_URL);
+  await startMongo();
 
   const app = express();
 

@@ -10,15 +10,8 @@ import { getUserFromToken } from "../connect/helper";
 import { startMongo } from "../connect/mongo";
 import { typeDefs, resolvers } from "../graphql";
 
-declare const process: {
-  env: {
-    DB_URL: string;
-    PORT: number;
-  };
-};
-
 export const runOnlineServer = async () => {
-  await startMongo(process.env.DB_URL);
+  await startMongo();
 
   const app = express();
   const httpServer = http.createServer(app);

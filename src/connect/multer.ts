@@ -40,41 +40,6 @@ export const uploadfile = multer({
   limits: { fileSize: 10000000 },
 }).single("file");
 
-const storageonlineimage = multer.diskStorage({
-  destination: path.join(__dirname, "../client/static/images"),
-  filename: function (
-    req: any,
-    file: { originalname: string },
-    cb: (arg0: null, arg1: string) => void
-  ) {
-    cb(null, "image" + "-" + Date.now() + path.extname(file.originalname));
-  },
-});
-
-const storageonlinefile = multer.diskStorage({
-  destination: path.join(__dirname, "../client/static/files"),
-  filename: function (
-    req: any,
-    file: { originalname: string },
-    cb: (arg0: null, arg1: string) => void
-  ) {
-    cb(null, "file" + "-" + Date.now() + path.extname(file.originalname));
-  },
-});
-
-export const uploadonlineimage = multer({
-  storage: storageonlineimage,
-  limits: { fileSize: 5000000 },
-  fileFilter: function (req: any, file: any, cb: any) {
-    checkImageType(file, cb);
-  },
-}).single("file");
-
-export const uploadonlinefile = multer({
-  storage: storageonlinefile,
-  limits: { fileSize: 10000000 },
-}).single("file");
-
 function checkImageType(file: any, cb: any) {
   const filetypes = /jpeg|jpg|png|gif/;
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
