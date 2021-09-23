@@ -35,7 +35,7 @@ export const runOnlineServer = async () => {
     },
   });
   app.use(cors());
-  app.use("/", express.static(path.join(__dirname, "../../src/client")));
+  app.use("/", express.static(path.join(__dirname, "../../client")));
 
   await server.start();
   server.applyMiddleware({ app });
@@ -44,7 +44,7 @@ export const runOnlineServer = async () => {
   );
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
   app.get("/", function (_req: any, res: any) {
-    res.sendFile(path.join(__dirname, "../../src/client") + "/index.html");
+    res.sendFile(path.join(__dirname, "../../client") + "/index.html");
   });
   setTimeout(() => {
     initServer();

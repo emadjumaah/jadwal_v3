@@ -48,7 +48,7 @@ export const runLocalServer = async () => {
     },
   });
   app.use(cors());
-  app.use("/", express.static(path.join(__dirname, "../client")));
+  app.use("/", express.static(path.join(__dirname, "../../client")));
   app.use("/images", express.static(imageDirectory));
   app.use("/files", express.static(fileDirectory));
 
@@ -97,7 +97,7 @@ export const runLocalServer = async () => {
   );
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
   app.get("/", function (_req: any, res: any) {
-    res.sendFile(path.join(__dirname, "../client") + "/index.html");
+    res.sendFile(path.join(__dirname, "../../client") + "/index.html");
   });
 
   setTimeout(() => {
