@@ -9,7 +9,7 @@ import { initServer } from "../common/initServer";
 import { getUserFromToken } from "../connect/helper";
 import { startMongo } from "../connect/mongo";
 import { typeDefs, resolvers } from "../graphql";
-// import { uploadonlinefile, uploadonlineimage } from "../connect/multer";
+import { uploadonlinefile, uploadonlineimage } from "../connect/multer";
 
 declare const process: {
   env: {
@@ -37,52 +37,52 @@ export const runOnlineServer = async () => {
   });
   app.use(cors());
   app.use("/", express.static(path.join(__dirname, "../client")));
-  // app.use(
-  //   "/images",
-  //   express.static(path.join(__dirname, "../client/static/images"))
-  // );
-  // app.use(
-  //   "/files",
-  //   express.static(path.join(__dirname, "../client/static/files"))
-  // );
+  app.use(
+    "/images",
+    express.static(path.join(__dirname, "../client/static/images"))
+  );
+  app.use(
+    "/files",
+    express.static(path.join(__dirname, "../client/static/files"))
+  );
 
-  // app.post("/uploadimage", (req, res) => {
-  //   uploadonlineimage(req, res, (err: any) => {
-  //     if (err) {
-  //       console.log(err);
-  //     } else {
-  //       if (req.file == undefined) {
-  //         console.log("Error: No File Selected!");
-  //       } else {
-  //         res.end(
-  //           JSON.stringify({
-  //             path: `/images/${req.file.filename}`,
-  //             name: req.file.filename,
-  //           })
-  //         );
-  //       }
-  //     }
-  //   });
-  // });
+  app.post("/uploadimage", (req, res) => {
+    uploadonlineimage(req, res, (err: any) => {
+      if (err) {
+        console.log(err);
+      } else {
+        if (req.file == undefined) {
+          console.log("Error: No File Selected!");
+        } else {
+          res.end(
+            JSON.stringify({
+              path: `/images/${req.file.filename}`,
+              name: req.file.filename,
+            })
+          );
+        }
+      }
+    });
+  });
 
-  // app.post("/uploadfile", (req: any, res: any) => {
-  //   uploadonlinefile(req, res, (err: any) => {
-  //     if (err) {
-  //       console.log(err);
-  //     } else {
-  //       if (req.file == undefined) {
-  //         console.log("Error: No File Selected!");
-  //       } else {
-  //         res.end(
-  //           JSON.stringify({
-  //             path: `/files/${req.file.filename}`,
-  //             name: req.file.filename,
-  //           })
-  //         );
-  //       }
-  //     }
-  //   });
-  // });
+  app.post("/uploadfile", (req: any, res: any) => {
+    uploadonlinefile(req, res, (err: any) => {
+      if (err) {
+        console.log(err);
+      } else {
+        if (req.file == undefined) {
+          console.log("Error: No File Selected!");
+        } else {
+          res.end(
+            JSON.stringify({
+              path: `/files/${req.file.filename}`,
+              name: req.file.filename,
+            })
+          );
+        }
+      }
+    });
+  });
 
   await server.start();
   server.applyMiddleware({ app });
