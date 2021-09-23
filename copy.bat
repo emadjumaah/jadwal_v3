@@ -1,1 +1,1 @@
-xcopy /s /i "C:\projects\JADWAL\v2\server\build" "C:\jadwal\app\build"
+xcopy /s /i /y "C:\projects\JADWAL\v2\server\build" "C:\jadwal\app\build"

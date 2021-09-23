@@ -4,10 +4,9 @@
   "description": "Jadwal ERP - Service Revenue specialized software",
   "main": "index.js",
   "scripts": {
-    "build": "tsc --build && cp -R start.bat build && cp -R src/client build/client",
+    "build": "tsc --build && cp -R src/client build/client",
     "buildloc": "tsc --build && cp -R start.bat build && cp -R src/client build/client && copy.bat",
     "start": "node build/index.js",
-    "react": "cd client && yarn start",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
   },
   "keywords": [
