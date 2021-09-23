@@ -1,7 +1,14 @@
 require("dotenv").config();
 
-// import { runLocalServer } from "./server/local";
-// runLocalServer();
+const runSerrver = () => {
+  const local = process.env.LOCAL_SERVER;
+  if (local) {
+    const { runLocalServer } = require("./server/local");
+    runLocalServer();
+  } else {
+    const { runOnlineServer } = require("./server/online");
+    runOnlineServer();
+  }
+};
 
-import { runOnlineServer } from "./server/online";
-runOnlineServer();
+runSerrver();

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc --build",
-    "buildloc": "tsc --build && cp -R start.bat build && copy.bat",
+    "buildloc": "tsc --build && cp -R start.bat build",
     "start": "node build/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
   },

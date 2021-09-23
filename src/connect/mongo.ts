@@ -27,7 +27,7 @@ export const startMongo = async (dbUrl: string) => {
   if (mongoose.connection.readyState >= 1) return;
   try {
     await mongoose.connect(dbUrl, dboptions);
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV !== "production") {
       mongoose.set("debug", true);
     }
     return true;

@@ -15,14 +15,6 @@ import { createDataDirectories } from "../connect/createDir";
 import { startCronJobs } from "../connect/cron";
 import { typeDefs, resolvers } from "../graphql";
 
-declare const process: {
-  env: {
-    DB_URL: string;
-    PORT: number;
-    EXPRESS_PORT: number;
-  };
-};
-
 export const runLocalServer = async () => {
   const isValid = await checkLicens();
   if (!isValid) {
