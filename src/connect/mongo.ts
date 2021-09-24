@@ -33,10 +33,7 @@ mongoose.connection.on("error", (error) => {
 export const startMongo = async () => {
   if (mongoose.connection.readyState >= 1) return;
   try {
-    await mongoose.connect(
-      process.env.DB_URL ?? "mongodb://localhost:27017/jadwal",
-      dboptions
-    );
+    await mongoose.connect(process.env.DB_URL, dboptions);
     if (process.env.NODE_ENV === "development") {
       mongoose.set("debug", true);
     }
