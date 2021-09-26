@@ -22,6 +22,7 @@ const TaskSchema = new mongoose.Schema(
     project: { type: String },
     hideChildren: { type: Boolean },
     tasktype: { type: Number }, // time task, events qty task, manual progress task
+    groupId: { type: String, index: true },
 
     priority: { type: Number },
     status: { type: Number },

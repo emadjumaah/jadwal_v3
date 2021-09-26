@@ -7,6 +7,8 @@ export default {
       funcs.getCategories(payload, req),
     getBrands: (_: any, payload: any, req: any) =>
       funcs.getBrands(payload, req),
+    getGroups: (_: any, payload: any, req: any) =>
+      funcs.getGroups(payload, req),
     getDepartments: (_: any, payload: any, req: any) =>
       funcs.getDepartments(payload, req),
     getEmployees: (_: any, payload: any, req: any) =>
@@ -37,6 +39,10 @@ export default {
       funcs.createBrand(payload, req),
     updateBrand: (_: any, payload: any) => funcs.updateBrand(payload),
     deleteBrand: (_: any, payload: any) => funcs.deleteBrand(payload),
+    createGroup: (_: any, payload: any, req: any) =>
+      funcs.createGroup(payload, req),
+    updateGroup: (_: any, payload: any) => funcs.updateGroup(payload),
+    deleteGroup: (_: any, payload: any) => funcs.deleteGroup(payload),
     createDepartment: (_: any, payload: any, req: any) =>
       funcs.createDepartment(payload, req),
     updateDepartment: (_: any, payload: any) => funcs.updateDepartment(payload),

@@ -97,11 +97,22 @@ export default gql`
     branch: String
     autoNo: Int
     docNo: String
-    catType: Int
     name: String
     nameAr: String
     userId: String
 
+    createdAt: Date
+    updatedAt: Date
+  }
+  type Group {
+    _id: String
+    branch: String
+    autoNo: Int
+    docNo: String
+    name: String
+    nameAr: String
+    userId: String
+    tasks: [Int]
     createdAt: Date
     updatedAt: Date
   }
@@ -288,6 +299,12 @@ export default gql`
     message: String
     error: String
   }
+  type ResponseWithGroups {
+    ok: Boolean
+    data: [Group]
+    message: String
+    error: String
+  }
 
   type ResponseWithDepartments {
     ok: Boolean
@@ -324,6 +341,7 @@ export default gql`
     getLastNos: Response
     getCategories(isRTL: Boolean): ResponseWithCategories
     getBrands(isRTL: Boolean): ResponseWithBrands
+    getGroups(isRTL: Boolean): ResponseWithGroups
     getDepartments(isRTL: Boolean): ResponseWithDepartments
     getEmployees(isRTL: Boolean, resType: Int): ResponseWithEmployees
     getCustomers(isRTL: Boolean): ResponseWithCustomers
@@ -360,20 +378,28 @@ export default gql`
       nameAr: String
     ): Response
     deleteCategory(_id: String): Response
-    createBrand(
-      branch: String
-      catType: Int
-      name: String
-      nameAr: String
-    ): Response
+    createBrand(branch: String, name: String, nameAr: String): Response
     updateBrand(
       _id: String
       branch: String
-      catType: Int
       name: String
       nameAr: String
     ): Response
     deleteBrand(_id: String): Response
+    createGroup(
+      branch: String
+      name: String
+      nameAr: String
+      tasks: [Int]
+    ): Response
+    updateGroup(
+      _id: String
+      branch: String
+      name: String
+      nameAr: String
+      tasks: [Int]
+    ): Response
+    deleteGroup(_id: String): Response
     createDepartment(
       branch: String
       name: String

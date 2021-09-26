@@ -87,6 +87,7 @@ export const autoNoTypes = {
   kaid: "kaid",
   action: "action",
   notification: "notification",
+  group: "group",
 };
 export const autoNoPrefix = {
   salesInvoice: "SINV",

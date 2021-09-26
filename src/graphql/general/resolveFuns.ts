@@ -28,6 +28,8 @@ import {
   periods,
 } from "../../common/time";
 import Supplier from "../../models/Supplier";
+import Group from "../../models/Group";
+import Task from "../../models/Task";
 
 export const getLastNos = async () => {
   try {
@@ -97,6 +99,38 @@ export const getBrands = async (payload: any, req: any) => {
       return {
         ok: true,
         data: brands,
+        message: "success",
+      };
+    } else {
+      return {
+        ok: false,
+        message: "error",
+        error: "error",
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      ok: false,
+      message: "error",
+      error,
+    };
+  }
+};
+export const getGroups = async (payload: any, req: any) => {
+  const { user } = req;
+  const { branch } = user;
+  const { isRTL } = payload;
+
+  try {
+    const fieldName = isRTL ? "nameAr" : "name";
+    const grps = await Group.find({ branch }).sort({
+      [fieldName]: 1,
+    });
+    if (grps) {
+      return {
+        ok: true,
+        data: grps,
         message: "success",
       };
     } else {
@@ -906,6 +940,26 @@ export const createBrand = async (payload: any, req: any) => {
     };
   }
 };
+export const createGroup = async (payload: any, req: any) => {
+  const { user } = req;
+  const { branch } = user;
+  try {
+    const autoNo = await getAutoNo(autoNoTypes.group);
+    const docNo = autoNo;
+    const grp = await Group.create({ autoNo, docNo, branch, ...payload });
+    return {
+      ok: true,
+      message: "success",
+      data: JSON.stringify(grp),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message: "Error",
+      error: error,
+    };
+  }
+};
 
 const updateRelatedBrand = async (doc: any) => {
   const { _id, name, nameAr } = doc;
@@ -958,6 +1012,36 @@ export const updateBrand = async (payload: any) => {
     };
   }
 };
+export const updateGroup = async (payload: any) => {
+  const { _id, ...rest } = payload;
+  try {
+    const grp: any = await Group.findById(_id);
+    if (!grp) {
+      return {
+        ok: false,
+        message: "Error",
+        error: "Not Found",
+      };
+    }
+    Object.entries(rest).forEach(([key, value]) => {
+      grp[key] = value;
+    });
+    await grp.save();
+    return {
+      ok: true,
+      message: "ERROR updategrp",
+      data: JSON.stringify(grp),
+    };
+  } catch (error) {
+    console.log("ERROR updategrp");
+    console.log(error);
+    return {
+      ok: false,
+      message: "ERROR updategrp",
+      error,
+    };
+  }
+};
 
 const hasRelatedBrand = async (_id: any) => {
   const relatedItems = await Item.find({ brandId: _id });
@@ -1006,6 +1090,49 @@ export const deleteBrand = async (payload: any) => {
     return {
       ok: false,
       message: "ERROR deleteCategory",
+      error,
+    };
+  }
+};
+
+const hasRelatedGroup = async (_id: any) => {
+  const relatedItems = await Task.find({ groupId: _id });
+  if (relatedItems?.length > 0) {
+    return true;
+  }
+  return false;
+};
+export const deleteGroup = async (payload: any) => {
+  const { _id } = payload;
+  try {
+    const isRelated = await hasRelatedGroup(_id);
+    if (isRelated === true) {
+      return {
+        ok: false,
+        message: "Error",
+        error: "Item has related",
+      };
+    }
+    const grp: any = await Group.findById(_id);
+    if (!grp) {
+      return {
+        ok: false,
+        message: "Error",
+        error: "Not Found",
+      };
+    } else {
+      await grp.deleteOne();
+      return {
+        ok: true,
+        message: "Group Deleted",
+      };
+    }
+  } catch (error) {
+    console.log("ERROR deleteGroup");
+    console.log(error);
+    return {
+      ok: false,
+      message: "ERROR deleteGroup",
       error,
     };
   }

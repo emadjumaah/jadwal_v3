@@ -62,6 +62,7 @@ export default gql`
     project: String
     hideChildren: Boolean
     tasktype: Int
+    groupId: String
 
     priority: Int
     status: Int

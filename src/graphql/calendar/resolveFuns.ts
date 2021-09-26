@@ -480,9 +480,29 @@ export const updateTask = async (payload: any) => {
   }
 };
 
+const hasRelatedTask = async (id: any) => {
+  const relatedItems = await Operation.find({
+    taskId: id,
+    opType: { $ne: operationTypes.event },
+  });
+  if (relatedItems?.length > 0) {
+    return true;
+  }
+
+  return false;
+};
+
 export const deleteTask = async (payload: any) => {
   const { id } = payload;
   try {
+    const isRelated = await hasRelatedTask(id);
+    if (isRelated === true) {
+      return {
+        ok: false,
+        message: "Error",
+        error: "Item has related",
+      };
+    }
     const tsk: any = await Task.findOne({ id });
     if (!tsk) {
       return {
@@ -794,6 +814,15 @@ export const deleteTaskById = async (payload: any) => {
         error: "Not Found",
       };
     } else {
+      const isRelated = await hasRelatedTask(tsk.id);
+      if (isRelated === true) {
+        return {
+          ok: false,
+          message: "Error",
+          error: "Item has related",
+        };
+      }
+
       await Action.deleteMany({ taskId: tsk.id });
       await Listitem.deleteMany({ taskId: tsk.id });
       await Operation.deleteMany({
