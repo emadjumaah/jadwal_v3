@@ -46,6 +46,55 @@ export const getInvoices = async (payload: any, req: any) => {
     };
   }
 };
+export const getInvoicesList = async (payload: any, req: any) => {
+  const { user } = req;
+  const { branch } = user;
+  const { taskId, customerId, departmentId, employeeId } = payload;
+
+  const opType = operationTypes.salesInvoice;
+
+  const options: any = {
+    branch,
+    opType,
+  };
+
+  if (taskId) {
+    options.taskId = taskId;
+  }
+  if (customerId) {
+    options.customerId = customerId;
+  }
+  if (departmentId) {
+    options.departmentId = departmentId;
+  }
+  if (employeeId) {
+    options.employeeId = employeeId;
+  }
+
+  try {
+    const ops = await Operation.find(options).sort({ time: -1 });
+    if (ops) {
+      return {
+        ok: true,
+        data: ops,
+        message: "success",
+      };
+    } else {
+      return {
+        ok: false,
+        message: "error",
+        error: "error",
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      ok: false,
+      message: "error",
+      error,
+    };
+  }
+};
 export const getOperationItems = async (payload: any) => {
   const { opId } = payload;
   const items = await Listitem.find({ opId });

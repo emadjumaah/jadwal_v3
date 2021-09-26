@@ -34,7 +34,7 @@ const OperationSchema = new mongoose.Schema(
     itemNameAr: { type: String },
     // end event related
 
-    customerId: { type: String },
+    customerId: { type: String, index: true },
     customerName: { type: String },
     customerNameAr: { type: String },
     customerPhone: { type: String },

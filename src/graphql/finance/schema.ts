@@ -158,7 +158,7 @@ export default gql`
       debitAcc: Int
       creditAcc: Int
       amount: Float
-
+      refNo: String
       taskId: Int
       userId: String
     ): Response
@@ -176,7 +176,7 @@ export default gql`
       debitAcc: Int
       creditAcc: Int
       amount: Float
-
+      refNo: String
       taskId: Int
       userId: String
     ): Response

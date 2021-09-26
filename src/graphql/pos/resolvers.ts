@@ -4,6 +4,8 @@ export default {
   Query: {
     getInvoices: (_: any, payload: any, req: any) =>
       funcs.getInvoices(payload, req),
+    getInvoicesList: (_: any, payload: any, req: any) =>
+      funcs.getInvoicesList(payload, req),
     getOperationItems: (_: any, payload: any) =>
       funcs.getOperationItems(payload),
     getOperationKaids: (_: any, payload: any) =>
