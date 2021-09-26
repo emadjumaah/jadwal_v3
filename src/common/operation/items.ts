@@ -318,30 +318,42 @@ function percentage(partialValue: any, totalValue: any) {
   return (100 * partialValue) / totalValue;
 }
 
-export const onTaskEventsUpdate = async (taskId: any) => {
-  const allevents = await Operation.find({
-    opType: operationTypes.event,
-    taskId,
-  });
-  if (allevents && allevents.length > 0) {
-    const sortedEvents = _.sortBy(allevents, "startDate");
+export const onTaskOperationUpdate = async (taskId: any) => {
+  const opersations = await Operation.find({ taskId });
+  const opsdata: any = _.groupBy(opersations, "opType");
+
+  if (opersations && opersations.length > 0) {
+    const sortedEvents = _.sortBy(opsdata?.[operationTypes.event], "startDate");
     const start = sortedEvents[0].startDate;
-    const end = sortedEvents[allevents.length - 1].endDate;
-    const amount = _.sumBy(allevents, "amount");
+    const end = sortedEvents[sortedEvents.length - 1].endDate;
+    const amount = _.sumBy(sortedEvents, "amount");
+    const totalinvoiced = _.sumBy(
+      opsdata?.[operationTypes.salesInvoice],
+      "amount"
+    );
+    const totalpaid = _.sumBy(
+      opsdata?.[operationTypes.customerReceipt],
+      "amount"
+    );
+    const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
     const evDone = sortedEvents.filter((se: any) => se.status === 10)?.length;
     const evQty = sortedEvents.length;
     const progress = percentage(evDone, evQty);
-    const status = evDone === evQty ? 10 : 2;
 
     const task = await Task.findOne({ id: taskId });
     task.start = start;
     task.end = end;
-    task.amount = amount;
     task.evDone = evDone;
     task.evQty = evQty;
     task.progress = parseInt(`${progress}`);
-    task.status = status;
 
+    task.amount = amount;
+    task.totalinvoiced = totalinvoiced;
+    task.totalpaid = totalpaid;
+    task.toatlExpenses = toatlExpenses;
+    if (evDone === evQty) {
+      task.status = 10;
+    }
     await task.save();
   }
 };

@@ -65,10 +65,14 @@ export default gql`
 
     priority: Int
     status: Int
-    amount: Float
     events: [Operation]
     evQty: Int
     evDone: Int
+
+    amount: Float
+    totalinvoiced: Float
+    totalpaid: Float
+    toatlExpenses: Float
 
     customerId: String
     customerName: String

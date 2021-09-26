@@ -411,3 +411,22 @@ export const uuidv4 = () => {
     return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
   });
 };
+
+export const decompressEvents = (events: any) => {
+  if (events) {
+    const data = JSON.parse(events);
+    const { event, times } = data;
+    if (event && times) {
+      const readyEvents = times.map((evt: any) => {
+        return {
+          ...event,
+          startDate: evt.startDate,
+          endDate: evt.endDate,
+        };
+      });
+      return readyEvents;
+    } else {
+      return [];
+    }
+  }
+};

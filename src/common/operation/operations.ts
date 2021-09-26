@@ -7,7 +7,7 @@ import {
   handleCostAndQty,
   setAutoNo,
 } from "./helper";
-import { createOperationItems, onTaskFinanceUpdate } from "./items";
+import { createOperationItems, onTaskOperationUpdate } from "./items";
 import { getYMD } from "./../time";
 import { createKaid } from "./kaids";
 
@@ -58,7 +58,7 @@ export const createOperation = async (data: any) => {
 
     await createOperationItems({ operation, items });
     if (taskId) {
-      await onTaskFinanceUpdate(taskId);
+      await onTaskOperationUpdate(taskId);
     }
     return operation;
   } catch (error) {
@@ -127,6 +127,7 @@ export const updateOperation = async (data: any) => {
 
   try {
     const operation: any = await Operation.findById(_id);
+    const oldTaskId = operation.taskId;
     if (!operation) {
       return {
         ok: false,
@@ -174,7 +175,12 @@ export const updateOperation = async (data: any) => {
     await createOperationItems({ operation, items });
 
     await operation.save();
-
+    if (operation.taskId) {
+      await onTaskOperationUpdate(operation.taskId);
+      if (oldTaskId && oldTaskId !== operation.taskId) {
+        await onTaskOperationUpdate(oldTaskId);
+      }
+    }
     return operation;
   } catch (error) {
     console.log(error);
@@ -247,6 +253,8 @@ export const updateKaidOperation = async (data: any) => {
 export const deleteOperation = async (opId: any) => {
   try {
     const operation: any = await Operation.findById(opId);
+    const taskId = operation.taskId;
+
     if (!operation) {
       return {
         ok: false,
@@ -257,6 +265,9 @@ export const deleteOperation = async (opId: any) => {
     await Kaid.deleteMany({ opId });
     await Listitem.deleteMany({ opId });
     await operation.deleteOne();
+    if (taskId) {
+      await onTaskOperationUpdate(taskId);
+    }
   } catch (error) {
     console.log(error);
     return null;

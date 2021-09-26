@@ -6,11 +6,12 @@ import {
   createEventActions,
   createEventListItems,
   createTaskListItems,
-  onTaskEventsUpdate,
+  onTaskOperationUpdate,
 } from "../../common/operation/items";
 import Action from "../../models/Action";
 import { sendSMS, sendEmail, sendNotification } from "../../connect";
 import Notification from "../../models/Notification";
+import { decompressEvents } from "../../common/time";
 
 export const getActions = async (payload: any, req: any) => {
   const { user } = req;
@@ -389,16 +390,8 @@ export const createTask = async (payload: any, req: any) => {
     const autoNo = await getAutoNo(autoNoTypes.task);
     const autoTaskNo = await getAutoNo(autoNoTypes.task);
     const id = autoNo;
-    const {
-      customer,
-      employee,
-      department,
-      items,
-      events,
-      docNo,
-      prefix,
-      ...rest
-    } = payload;
+    const { customer, employee, department, events, docNo, prefix, ...rest } =
+      payload;
     const documentNo = `${prefix ? prefix : autoNoPrefix.task}-${
       docNo ? docNo : autoTaskNo
     }`;
@@ -407,7 +400,7 @@ export const createTask = async (payload: any, req: any) => {
       autoNo,
       docNo: documentNo,
       priority: 2,
-      status: 2,
+      status: 1,
       id,
       branch,
       ...customer,
@@ -416,16 +409,15 @@ export const createTask = async (payload: any, req: any) => {
       ...rest,
     });
 
-    if (items) {
-      const allitems = JSON.parse(items);
-      await createTaskListItems({ items: allitems, task });
-    }
     if (events) {
-      const allevents = JSON.parse(events);
+      const allevents = decompressEvents(events);
       for (const event of allevents) {
         await createEventForTask({ eventData: event, branch, taskId: id });
       }
+      task.status = 2;
+      await task.save();
     }
+
     return {
       ok: true,
       message: "success",
@@ -499,16 +491,9 @@ export const deleteTask = async (payload: any) => {
         error: "Not Found",
       };
     } else {
-      const events = await Operation.find({
-        opType: operationTypes.event,
-        taskId: id,
-      });
-      if (events && events.length > 0) {
-        for (const event of events) {
-          await deleteEvent({ id: event.id });
-        }
-      }
+      await Action.deleteMany({ taskId: id });
       await Listitem.deleteMany({ taskId: id });
+      await Operation.deleteMany({ opType: operationTypes.event, taskId: id });
       await tsk.deleteOne();
       return {
         ok: true,
@@ -577,7 +562,7 @@ export const createEvent = async (payload: any, req: any) => {
       }
     }
     if (event.taskId) {
-      await onTaskEventsUpdate(event.taskId);
+      await onTaskOperationUpdate(event.taskId);
     }
 
     return {
@@ -664,7 +649,6 @@ export const createEventForTask = async ({
 
 export const updateEvent = async (payload: any) => {
   const { id, items, actions, ...rest } = payload;
-  const { taskId } = payload;
   try {
     const evn: any = await Operation.findOne({ id });
     const oldTaskId = evn.taskId;
@@ -722,9 +706,9 @@ export const updateEvent = async (payload: any) => {
 
     await evn.save();
     if (evn.taskId) {
-      await onTaskEventsUpdate(evn.taskId);
+      await onTaskOperationUpdate(evn.taskId);
       if (oldTaskId && oldTaskId !== evn.taskId) {
-        await onTaskEventsUpdate(oldTaskId);
+        await onTaskOperationUpdate(oldTaskId);
       }
     }
     return evn;
@@ -739,6 +723,7 @@ export const deleteEvent = async (payload: any) => {
   const { id } = payload;
   try {
     const evn: any = await Operation.findOne({ id });
+    const taskId = evn.taskId;
     if (!evn) {
       return {
         ok: false,
@@ -748,10 +733,10 @@ export const deleteEvent = async (payload: any) => {
     } else {
       await Listitem.deleteMany({ eventId: id });
       await Action.deleteMany({ eventId: id });
-      if (evn.taskId) {
-        await onTaskEventsUpdate(evn.taskId);
-      }
       await evn.deleteOne();
+      if (taskId) {
+        await onTaskOperationUpdate(taskId);
+      }
       return {
         ok: true,
         message: "deleteItem",
@@ -781,7 +766,7 @@ export const deleteEventById = async (payload: any) => {
       await Listitem.deleteMany({ eventId: evn.id });
       await evn.deleteOne();
       if (evn.taskId) {
-        await onTaskEventsUpdate(evn.taskId);
+        await onTaskOperationUpdate(evn.taskId);
       }
       return {
         ok: true,
@@ -809,16 +794,12 @@ export const deleteTaskById = async (payload: any) => {
         error: "Not Found",
       };
     } else {
-      const events = await Operation.find({
+      await Action.deleteMany({ taskId: tsk.id });
+      await Listitem.deleteMany({ taskId: tsk.id });
+      await Operation.deleteMany({
         opType: operationTypes.event,
         taskId: tsk.id,
       });
-      if (events && events.length > 0) {
-        for (const event of events) {
-          await deleteEvent({ id: event.id });
-        }
-      }
-      await Listitem.deleteMany({ taskId: tsk.id });
       await tsk.deleteOne();
       return {
         ok: true,
