@@ -18,13 +18,22 @@ export const autoBackupDB = async () => {
   const nowPath = path + pirfex + getTimeDirName(now);
   const dayPath = path + pirfex + getTimeDirName(yesterday);
   const removePath = yesterday.getHours() !== 0 ? dayPath : null;
-  const cmd = `mongodump --host ${host} --port ${port} --db ${database} --out ${nowPath}`;
+  const cmdloc = `mongodump --host ${host} --port ${port} --db ${database} --out ${nowPath}`;
+  // const cmduri = `mongodump --uri ${process.env.DB_URL_BACKUP} --out ${nowPath}`;
 
   try {
-    await asyncExec(cmd);
+    // if (process.env.NODE_ENV !== "production") {
+    //   await asyncExec(cmduri);
+    // } else {
+    //   await asyncExec(cmdloc);
+    // }
+    await asyncExec(cmdloc);
+
     if (removePath && fs.existsSync(removePath)) {
       exec("rm -rf " + removePath);
     }
+    console.log("DONE DB BACKUP ...");
+
     return true;
   } catch (error) {
     console.log(error);
@@ -54,6 +63,8 @@ export const restoreDBfromPath = async (path: string) => {
   console.log("cmd", cmd);
   try {
     await asyncExec(cmd);
+    console.log("RESTORE ONE ...");
+
     return true;
   } catch (error) {
     console.log(error);
