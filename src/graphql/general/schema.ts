@@ -160,6 +160,13 @@ export default gql`
     departmentColor: String
     info: String
 
+    documentNo: String
+    startDate: Date
+    endDate: Date
+    cost: Float
+    model: String
+    type: String
+
     userId: String
 
     createdAt: Date
@@ -428,6 +435,12 @@ export default gql`
       department: DepartmentInput
       daysoff: String
       info: String
+      documentNo: String
+      startDate: Date
+      endDate: Date
+      cost: Float
+      model: String
+      type: String
     ): Response
     updateEmployee(
       _id: String

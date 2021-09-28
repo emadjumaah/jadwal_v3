@@ -41,6 +41,9 @@ export const createOperationKaid = async (operation: any) => {
     day,
     refNo,
     refType,
+    taskId,
+    eventId,
+    desc,
   } = operation;
   const shareId = uuidv4();
   await Promise.all(
@@ -88,6 +91,9 @@ export const createOperationKaid = async (operation: any) => {
         day,
         refNo,
         refType,
+        taskId,
+        eventId,
+        desc,
       });
     })
   );
@@ -209,6 +215,8 @@ export const createItemKaid = async ({ item, operation }: any) => {
     opId,
     opType,
     opDocNo,
+    taskId,
+    eventId,
   } = item;
   const {
     branch,
@@ -304,6 +312,8 @@ export const createItemKaid = async ({ item, operation }: any) => {
       year,
       month,
       day,
+      taskId,
+      eventId,
     });
   }
 };

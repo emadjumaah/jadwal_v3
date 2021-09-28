@@ -344,6 +344,7 @@ export const getMonthlyReport = async (payload: any, req: any) => {
     employeeIds,
     customerIds,
     supplierIds,
+    taskIds,
     start,
     end,
   } = payload;
@@ -378,6 +379,9 @@ export const getMonthlyReport = async (payload: any, req: any) => {
   }
   if (supplierIds) {
     options.supplierId = { $in: supplierIds };
+  }
+  if (taskIds) {
+    options.taskId = { $in: taskIds };
   }
 
   const sales = await Kaid.find(options).sort({ opTime: -1 });

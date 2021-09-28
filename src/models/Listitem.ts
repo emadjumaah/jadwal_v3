@@ -32,6 +32,7 @@ const ListItemSchema = new mongoose.Schema(
 
     opId: { type: String },
     opType: { type: Number },
+    opTime: { type: Date, index: true },
     opDocNo: { type: String },
     eventId: { type: Number, index: true },
     taskId: { type: Number, index: true },
@@ -47,24 +48,31 @@ const ListItemSchema = new mongoose.Schema(
     amount: { type: Number }, // total in order invoice and typing in expenses
 
     // relations
-    categoryId: { type: String },
+    categoryId: { type: String, index: true },
     categoryName: { type: String },
     categoryNameAr: { type: String },
 
-    brandId: { type: String },
+    brandId: { type: String, index: true },
     brandName: { type: String },
     brandNameAr: { type: String },
 
-    departmentId: { type: String },
+    departmentId: { type: String, index: true },
     departmentName: { type: String },
     departmentNameAr: { type: String },
     departmentColor: { type: String },
 
-    employeeId: { type: String },
+    employeeId: { type: String, index: true },
     employeeName: { type: String },
     employeeNameAr: { type: String },
     employeeColor: { type: String },
     employeePhone: { type: String },
+
+    customerId: { type: String, index: true },
+    customerName: { type: String },
+    customerNameAr: { type: String },
+    supplierId: { type: String, index: true },
+    supplierName: { type: String },
+    supplierNameAr: { type: String },
 
     // General
     userId: { type: String }, // created user

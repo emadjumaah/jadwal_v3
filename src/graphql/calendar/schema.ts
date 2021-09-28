@@ -143,10 +143,36 @@ export default gql`
       employeeIds: [String]
       customerIds: [String]
       supplierIds: [String]
+      taskIds: [Int]
       status: Int
       start: Date
       end: Date
     ): ResponseWithOperations
+    getReportDocuments(
+      types: [Int]
+      serviceIds: [String]
+      categoryIds: [String]
+      departmentIds: [String]
+      employeeIds: [String]
+      customerIds: [String]
+      supplierIds: [String]
+      taskIds: [Int]
+      status: Int
+      start: Date
+      end: Date
+    ): ResponseWithOperations
+    getReportServices(
+      types: [Int]
+      serviceIds: [String]
+      categoryIds: [String]
+      departmentIds: [String]
+      employeeIds: [String]
+      customerIds: [String]
+      supplierIds: [String]
+      taskIds: [Int]
+      start: Date
+      end: Date
+    ): ResponseWithListitems
     getChartEvents(
       itemId: String
       categoryId: String

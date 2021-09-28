@@ -13,6 +13,10 @@ export default {
     getEventsInfo: (_: any, __: any, req: any) => funcs.getEventsInfo(req),
     getReportEvents: (_: any, payload: any, req: any) =>
       funcs.getReportEvents(payload, req),
+    getReportDocuments: (_: any, payload: any, req: any) =>
+      funcs.getReportDocuments(payload, req),
+    getReportServices: (_: any, payload: any, req: any) =>
+      funcs.getReportServices(payload, req),
     getChartEvents: (_: any, payload: any, req: any) =>
       funcs.getChartEvents(payload, req),
     // actions

@@ -157,6 +157,7 @@ export default gql`
 
     opId: String
     opType: Int
+    opTime: Date
     opDocNo: String
     eventId: Int
     taskId: Int
@@ -185,6 +186,13 @@ export default gql`
     employeeNameAr: String
     employeeColor: String
     employeePhone: String
+
+    customerId: String
+    customerName: String
+    customerNameAr: String
+    supplierId: String
+    supplierName: String
+    supplierNameAr: String
 
     userId: String
     note: String

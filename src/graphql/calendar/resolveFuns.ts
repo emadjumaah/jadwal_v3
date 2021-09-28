@@ -241,6 +241,7 @@ export const getReportEvents = async (payload: any, req: any) => {
     employeeIds,
     customerIds,
     supplierIds,
+    taskIds,
     status,
     start,
     end,
@@ -269,6 +270,9 @@ export const getReportEvents = async (payload: any, req: any) => {
   if (supplierIds) {
     options.supplierId = { $in: supplierIds };
   }
+  if (taskIds) {
+    options.taskId = { $in: taskIds };
+  }
   if (status) {
     options.status = status;
   }
@@ -279,6 +283,133 @@ export const getReportEvents = async (payload: any, req: any) => {
     return {
       ok: true,
       data: evns,
+    };
+  } else {
+    return {
+      ok: false,
+      message: "error",
+      error: "error",
+    };
+  }
+};
+export const getReportDocuments = async (payload: any, req: any) => {
+  const { user } = req;
+  const { branch } = user;
+  const {
+    types,
+    serviceIds,
+    categoryIds,
+    departmentIds,
+    employeeIds,
+    customerIds,
+    supplierIds,
+    taskIds,
+    status,
+    start,
+    end,
+  } = payload;
+
+  const options: any = {
+    branch,
+    time: { $gte: new Date(start), $lte: new Date(end) },
+    opType: { $ne: operationTypes.kaid },
+  };
+
+  if (types) {
+    options.opType = { $in: types };
+  }
+  if (serviceIds) {
+    options.itemId = { $in: serviceIds };
+  }
+  if (categoryIds) {
+    options.categoryId = { $in: categoryIds };
+  }
+  if (departmentIds) {
+    options.departmentId = { $in: departmentIds };
+  }
+  if (employeeIds) {
+    options.employeeId = { $in: employeeIds };
+  }
+  if (customerIds) {
+    options.customerId = { $in: customerIds };
+  }
+  if (supplierIds) {
+    options.supplierId = { $in: supplierIds };
+  }
+  if (taskIds) {
+    options.taskId = { $in: taskIds };
+  }
+  if (status) {
+    options.status = status;
+  }
+
+  const evns = await Operation.find(options);
+
+  if (evns) {
+    return {
+      ok: true,
+      data: evns,
+    };
+  } else {
+    return {
+      ok: false,
+      message: "error",
+      error: "error",
+    };
+  }
+};
+export const getReportServices = async (payload: any, req: any) => {
+  const { user } = req;
+  const { branch } = user;
+  const {
+    types,
+    serviceIds,
+    categoryIds,
+    departmentIds,
+    employeeIds,
+    customerIds,
+    supplierIds,
+    taskIds,
+    start,
+    end,
+  } = payload;
+
+  const options: any = {
+    branch,
+    opTime: { $gte: new Date(start), $lte: new Date(end) },
+  };
+
+  if (types) {
+    options.opType = { $in: types };
+  }
+  if (serviceIds) {
+    options.itemId = { $in: serviceIds };
+  }
+  if (categoryIds) {
+    options.categoryId = { $in: categoryIds };
+  }
+  if (departmentIds) {
+    options.departmentId = { $in: departmentIds };
+  }
+  if (employeeIds) {
+    options.employeeId = { $in: employeeIds };
+  }
+  if (customerIds) {
+    options.customerId = { $in: customerIds };
+  }
+  if (supplierIds) {
+    options.supplierId = { $in: supplierIds };
+  }
+  if (taskIds) {
+    options.taskId = { $in: taskIds };
+  }
+
+  const items = await Listitem.find(options);
+
+  if (items) {
+    return {
+      ok: true,
+      data: items,
     };
   } else {
     return {

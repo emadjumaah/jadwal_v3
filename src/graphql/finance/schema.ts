@@ -123,6 +123,7 @@ export default gql`
       employeeIds: [String]
       customerIds: [String]
       supplierIds: [String]
+      taskIds: [Int]
       start: Date
       end: Date
     ): ResponseWithKaids

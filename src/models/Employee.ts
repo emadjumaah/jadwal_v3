@@ -18,10 +18,17 @@ const EmployeeSchema = new mongoose.Schema(
     city: { type: String },
     address: { type: String },
     color: { type: String },
-    status: { type: String },
     daysoff: { type: String },
 
     isInactive: { type: Boolean },
+    status: { type: String },
+
+    documentNo: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
+    cost: { type: Number },
+    model: { type: String },
+    type: { type: String },
 
     // commotion
     comPercent: { type: Number },
@@ -32,7 +39,6 @@ const EmployeeSchema = new mongoose.Schema(
     departmentColor: { type: String },
 
     info: { type: String },
-
     userId: { type: String }, // created user
     note: { type: String },
   },
