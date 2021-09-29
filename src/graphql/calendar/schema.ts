@@ -132,6 +132,8 @@ export default gql`
       status: Int
       start: Date
       end: Date
+      taskId: Int
+      due: Boolean
     ): ResponseWithOperations
     getReminders: ResponseWithOperations
     getEventsInfo: Response

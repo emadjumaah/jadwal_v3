@@ -361,7 +361,7 @@ export const onTaskOperationUpdate = async (taskId: any) => {
     const evDone = sortedEvents.filter((se: any) => se.status === 10)?.length;
     const evQty = sortedEvents.length;
     const progress = percentage(evDone, evQty);
-
+    const status = evDone === evQty ? 10 : 2;
     const task = await Task.findOne({ id: taskId });
     task.start = start;
     task.end = end;
@@ -373,6 +373,7 @@ export const onTaskOperationUpdate = async (taskId: any) => {
     task.totalinvoiced = totalinvoiced;
     task.totalpaid = totalpaid;
     task.toatlExpenses = toatlExpenses;
+    task.status = status;
     if (evDone === evQty) {
       task.status = 10;
     }

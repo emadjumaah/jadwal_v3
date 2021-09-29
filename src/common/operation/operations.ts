@@ -1,12 +1,6 @@
 import { autoNoPrefix, autoNoTypes } from "../../constant";
 import { Kaid, Operation, Listitem } from "../../models";
-import {
-  getAutoNo,
-  getDeliveyType,
-  getNameOfDocument,
-  handleCostAndQty,
-  setAutoNo,
-} from "./helper";
+import { getAutoNo, getNameOfDocument, setAutoNo } from "./helper";
 import { createOperationItems, onTaskOperationUpdate } from "./items";
 import { getYMD } from "./../time";
 import { createKaid } from "./kaids";

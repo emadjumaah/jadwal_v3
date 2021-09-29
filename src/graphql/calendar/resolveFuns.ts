@@ -125,13 +125,22 @@ export const getTaskItems = async (payload: any) => {
 export const getEvents = async (payload: any, req: any) => {
   const { user } = req;
   const { branch } = user;
-  const { start, end, ...rest } = payload;
-  const evns = await Operation.find({
+  const { start, end, due, ...rest } = payload;
+
+  const options = {
     branch,
     opType: operationTypes.event,
     ...rest,
-    startDate: { $gte: new Date(start), $lte: new Date(end) },
-  });
+  };
+
+  if (due) {
+    options.startDate = { $lt: new Date() };
+    options.status = { $ne: 10 };
+  } else {
+    options.startDate = { $gte: new Date(start), $lte: new Date(end) };
+  }
+
+  const evns = await Operation.find(options);
   if (evns) {
     return {
       ok: true,
@@ -146,6 +155,7 @@ export const getEvents = async (payload: any, req: any) => {
     };
   }
 };
+
 export const getReminders = async (req: any) => {
   const { user } = req;
   const { branch } = user;
@@ -292,6 +302,8 @@ export const getReportEvents = async (payload: any, req: any) => {
     };
   }
 };
+
+const discardList = [15, 70, 71, 72, 90];
 export const getReportDocuments = async (payload: any, req: any) => {
   const { user } = req;
   const { branch } = user;
@@ -311,8 +323,11 @@ export const getReportDocuments = async (payload: any, req: any) => {
 
   const options: any = {
     branch,
-    time: { $gte: new Date(start), $lte: new Date(end) },
-    opType: { $ne: operationTypes.kaid },
+    $or: [
+      { time: { $gte: new Date(start), $lte: new Date(end) } },
+      { startDate: { $gte: new Date(start), $lte: new Date(end) } },
+    ],
+    opType: { $nin: discardList },
   };
 
   if (types) {
