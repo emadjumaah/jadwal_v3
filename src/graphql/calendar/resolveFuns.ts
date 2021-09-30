@@ -140,7 +140,7 @@ export const getEvents = async (payload: any, req: any) => {
     options.startDate = { $gte: new Date(start), $lte: new Date(end) };
   }
 
-  const evns = await Operation.find(options);
+  const evns = await Operation.find(options).sort({ startDate: -1 });
   if (evns) {
     return {
       ok: true,
