@@ -186,14 +186,14 @@ export const getDepartments = async (payload: any, req: any) => {
 export const getEmployees = async (payload: any, req: any) => {
   const { user } = req;
   const { branch } = user;
-  const { isRTL, resType } = payload;
-  const options: any = { branch };
-  if (resType) {
-    options.resType = resType;
-  }
+  const { isRTL, resTypes } = payload;
 
   try {
     const fieldName = isRTL ? "nameAr" : "name";
+    const options: any = { branch };
+    if (resTypes) {
+      options.resType = { $in: resTypes };
+    }
     const empl = await Employee.find(options).sort({
       [fieldName]: 1,
     });

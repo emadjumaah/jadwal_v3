@@ -12,13 +12,21 @@ export const getExpenses = async (payload: any, req: any) => {
   const { branch } = user;
 
   const { start, end, ...rest } = payload;
-
-  const ops = await Operation.find({
-    branch,
-    opType: operationTypes.expenses,
-    ...rest,
-    time: end ? { $gte: start, $lte: end } : { $gte: start },
-  }).sort({ time: -1 });
+  let ops = null;
+  if (start) {
+    ops = await Operation.find({
+      branch,
+      opType: operationTypes.expenses,
+      ...rest,
+      time: end ? { $gte: start, $lte: end } : { $gte: start },
+    }).sort({ time: -1 });
+  } else {
+    ops = await Operation.find({
+      branch,
+      opType: operationTypes.expenses,
+      ...rest,
+    }).sort({ time: -1 });
+  }
 
   if (ops) {
     return {

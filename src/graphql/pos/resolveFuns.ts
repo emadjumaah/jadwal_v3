@@ -17,13 +17,21 @@ export const getInvoices = async (payload: any, req: any) => {
   const { start, end, ...rest } = payload;
   const opType = operationTypes.salesInvoice;
   try {
-    const ops = await Operation.find({
-      branch,
-      opType,
-      ...rest,
-      time: end ? { $gte: start, $lte: end } : { $gte: start },
-    }).sort({ time: -1 });
-
+    let ops = null;
+    if (start) {
+      ops = await Operation.find({
+        branch,
+        opType,
+        ...rest,
+        time: end ? { $gte: start, $lte: end } : { $gte: start },
+      }).sort({ time: -1 });
+    } else {
+      ops = await Operation.find({
+        branch,
+        opType,
+        ...rest,
+      }).sort({ time: -1 });
+    }
     if (ops) {
       return {
         ok: true,

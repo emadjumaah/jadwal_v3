@@ -1,7 +1,13 @@
 import { autoNoPrefix, autoNoTypes } from "../../constant";
 import { Kaid, Operation, Listitem } from "../../models";
 import { getAutoNo, getNameOfDocument, setAutoNo } from "./helper";
-import { createOperationItems, onTaskOperationUpdate } from "./items";
+import {
+  createOperationItems,
+  onCustomerOperationUpdate,
+  onDepartmentOperationUpdate,
+  onEmplyeeOperationUpdate,
+  onTaskOperationUpdate,
+} from "./items";
 import { getYMD } from "./../time";
 import { createKaid } from "./kaids";
 
@@ -53,6 +59,15 @@ export const createOperation = async (data: any) => {
     await createOperationItems({ operation, items });
     if (taskId) {
       await onTaskOperationUpdate(taskId);
+    }
+    if (operation.customerId) {
+      await onCustomerOperationUpdate(operation.customerId);
+    }
+    if (operation.employeeId) {
+      await onEmplyeeOperationUpdate(operation.employeeId);
+    }
+    if (operation.departmentId) {
+      await onDepartmentOperationUpdate(operation.departmentId);
     }
     return operation;
   } catch (error) {
@@ -122,6 +137,9 @@ export const updateOperation = async (data: any) => {
   try {
     const operation: any = await Operation.findById(_id);
     const oldTaskId = operation.taskId;
+    const oldCustomerId = operation.customerId;
+    const oldEmployeeId = operation.employeeId;
+    const oldDepartmentId = operation.departmentId;
     if (!operation) {
       return {
         ok: false,
@@ -175,6 +193,25 @@ export const updateOperation = async (data: any) => {
         await onTaskOperationUpdate(oldTaskId);
       }
     }
+    if (operation.customerId) {
+      await onCustomerOperationUpdate(operation.customerId);
+      if (oldCustomerId && oldCustomerId !== operation.customerId) {
+        await onCustomerOperationUpdate(oldCustomerId);
+      }
+    }
+    if (operation.employeeId) {
+      await onEmplyeeOperationUpdate(operation.employeeId);
+      if (oldEmployeeId && oldEmployeeId !== operation.employeeId) {
+        await onEmplyeeOperationUpdate(oldEmployeeId);
+      }
+    }
+    if (operation.departmentId) {
+      await onDepartmentOperationUpdate(operation.departmentId);
+      if (oldDepartmentId && oldDepartmentId !== operation.departmentId) {
+        await onDepartmentOperationUpdate(oldDepartmentId);
+      }
+    }
+
     return operation;
   } catch (error) {
     console.log(error);
@@ -261,6 +298,15 @@ export const deleteOperation = async (opId: any) => {
     await operation.deleteOne();
     if (taskId) {
       await onTaskOperationUpdate(taskId);
+    }
+    if (operation.customerId) {
+      await onCustomerOperationUpdate(operation.customerId);
+    }
+    if (operation.employeeId) {
+      await onEmplyeeOperationUpdate(operation.employeeId);
+    }
+    if (operation.departmentId) {
+      await onDepartmentOperationUpdate(operation.departmentId);
     }
   } catch (error) {
     console.log(error);

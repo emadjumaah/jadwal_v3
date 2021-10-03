@@ -13,6 +13,15 @@ const DepartmentSchema = new mongoose.Schema(
     desc: { type: String },
     userId: { type: String }, // created user
     note: { type: String },
+    depType: { type: Number, index: true }, // 1:managment, 2: operational
+
+    amount: { type: Number },
+    totalinvoiced: { type: Number },
+    totalpaid: { type: Number },
+    toatlExpenses: { type: Number },
+    progress: { type: Number, default: 0 },
+    evQty: { type: Number },
+    evDone: { type: Number },
   },
   { timestamps: true }
 );

@@ -123,6 +123,13 @@ export default gql`
     getTaskEvents(taskId: Int): ResponseWithOperations
     getTaskItems(taskId: Int): ResponseWithListitems
 
+    getObjectEvents(
+      departmentId: String
+      employeeId: String
+      customerId: String
+      taskId: Int
+    ): ResponseWithOperations
+
     getEvents(
       itemId: String
       categoryId: String

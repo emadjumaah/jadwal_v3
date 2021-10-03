@@ -5,6 +5,7 @@ export default {
     getTask: (_: any, payload: any) => funcs.getTask(payload),
     getTasks: (_: any, payload: any, req: any) => funcs.getTasks(payload, req),
     getTaskEvents: (_: any, payload: any) => funcs.getTaskEvents(payload),
+    getObjectEvents: (_: any, payload: any) => funcs.getObjectEvents(payload),
     getTaskItems: (_: any, payload: any) => funcs.getTaskItems(payload),
     //
     getReminders: (_: any, ___: any, req: any) => funcs.getReminders(req),

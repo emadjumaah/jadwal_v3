@@ -6,6 +6,9 @@ import {
   createEventActions,
   createEventListItems,
   createTaskListItems,
+  onCustomerOperationUpdate,
+  onDepartmentOperationUpdate,
+  onEmplyeeOperationUpdate,
   onTaskOperationUpdate,
 } from "../../common/operation/items";
 import Action from "../../models/Action";
@@ -70,7 +73,40 @@ export const getTask = async (payload: any) => {
 export const getTasks = async (payload: any, req: any) => {
   const { user } = req;
   const { branch } = user;
-  const tasks = await Task.find({ branch, ...payload });
+  const { start, end, ...rest } = payload;
+  let tasks = [];
+  if (!start) {
+    tasks = await Task.find({
+      branch,
+      ...rest,
+    }).sort({ start: -1 });
+  } else {
+    tasks = await Task.find({
+      branch,
+      $or: [
+        {
+          $and: [
+            { end: { $gt: new Date(start) } },
+            { end: { $lt: new Date(end) } },
+          ],
+        },
+        {
+          $and: [
+            { start: { $gt: new Date(start) } },
+            { start: { $lt: new Date(end) } },
+          ],
+        },
+        {
+          $and: [
+            { start: { $lt: new Date(start) } },
+            { end: { $gt: new Date(end) } },
+          ],
+        },
+      ],
+      ...rest,
+    }).sort({ start: -1 });
+  }
+
   if (tasks) {
     return {
       ok: true,
@@ -89,6 +125,25 @@ export const getTasks = async (payload: any, req: any) => {
 export const getTaskEvents = async (payload: any) => {
   const { taskId } = payload;
   const events = await Operation.find({ opType: operationTypes.event, taskId });
+  if (events) {
+    return {
+      ok: true,
+      data: events,
+      message: "success",
+    };
+  } else {
+    return {
+      ok: false,
+      message: "error",
+      error: "error",
+    };
+  }
+};
+export const getObjectEvents = async (payload: any) => {
+  const events = await Operation.find({
+    opType: operationTypes.event,
+    ...payload,
+  });
   if (events) {
     return {
       ok: true,
@@ -730,6 +785,15 @@ export const createEvent = async (payload: any, req: any) => {
     if (event.taskId) {
       await onTaskOperationUpdate(event.taskId);
     }
+    if (event.customerId) {
+      await onCustomerOperationUpdate(event.customerId);
+    }
+    if (event.employeeId) {
+      await onEmplyeeOperationUpdate(event.employeeId);
+    }
+    if (event.departmentId) {
+      await onDepartmentOperationUpdate(event.departmentId);
+    }
 
     return {
       ok: true,
@@ -818,6 +882,9 @@ export const updateEvent = async (payload: any) => {
   try {
     const evn: any = await Operation.findOne({ id });
     const oldTaskId = evn.taskId;
+    const oldCustomerId = evn.customerId;
+    const oldEmployeeId = evn.employeeId;
+    const oldDepartmentId = evn.departmentId;
     if (!evn) {
       return {
         ok: false,
@@ -877,6 +944,24 @@ export const updateEvent = async (payload: any) => {
         await onTaskOperationUpdate(oldTaskId);
       }
     }
+    if (evn.customerId) {
+      await onCustomerOperationUpdate(evn.customerId);
+      if (oldCustomerId && oldCustomerId !== evn.customerId) {
+        await onCustomerOperationUpdate(oldCustomerId);
+      }
+    }
+    if (evn.employeeId) {
+      await onEmplyeeOperationUpdate(evn.employeeId);
+      if (oldEmployeeId && oldEmployeeId !== evn.employeeId) {
+        await onEmplyeeOperationUpdate(oldEmployeeId);
+      }
+    }
+    if (evn.departmentId) {
+      await onDepartmentOperationUpdate(evn.departmentId);
+      if (oldDepartmentId && oldDepartmentId !== evn.departmentId) {
+        await onDepartmentOperationUpdate(oldDepartmentId);
+      }
+    }
     return evn;
   } catch (error) {
     console.log("ERROR updateEvent");
@@ -902,6 +987,15 @@ export const deleteEvent = async (payload: any) => {
       await evn.deleteOne();
       if (taskId) {
         await onTaskOperationUpdate(taskId);
+      }
+      if (evn.customerId) {
+        await onCustomerOperationUpdate(evn.customerId);
+      }
+      if (evn.employeeId) {
+        await onEmplyeeOperationUpdate(evn.employeeId);
+      }
+      if (evn.departmentId) {
+        await onDepartmentOperationUpdate(evn.departmentId);
       }
       return {
         ok: true,
@@ -933,6 +1027,15 @@ export const deleteEventById = async (payload: any) => {
       await evn.deleteOne();
       if (evn.taskId) {
         await onTaskOperationUpdate(evn.taskId);
+      }
+      if (evn.customerId) {
+        await onCustomerOperationUpdate(evn.customerId);
+      }
+      if (evn.employeeId) {
+        await onEmplyeeOperationUpdate(evn.employeeId);
+      }
+      if (evn.departmentId) {
+        await onDepartmentOperationUpdate(evn.departmentId);
       }
       return {
         ok: true,

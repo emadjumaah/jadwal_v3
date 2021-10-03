@@ -2,7 +2,15 @@ import { gql } from "apollo-server-express";
 
 export default gql`
   extend type Query {
-    getExpenses(start: Date, end: Date, search: String): ResponseWithOperations
+    getExpenses(
+      start: Date
+      end: Date
+      search: String
+      taskId: Int
+      customerId: String
+      departmentId: String
+      employeeId: String
+    ): ResponseWithOperations
   }
   extend type Mutation {
     createExpenses(
@@ -17,6 +25,7 @@ export default gql`
       creditAcc: Int
       amount: Float
       taskId: Int
+      customer: CustomerInput
       department: DepartmentInput
       employee: EmployeeInput
 
@@ -35,6 +44,7 @@ export default gql`
       creditAcc: Int
       amount: Float
       taskId: Int
+      customer: CustomerInput
       department: DepartmentInput
       employee: EmployeeInput
 

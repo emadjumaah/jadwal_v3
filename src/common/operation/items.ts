@@ -1,4 +1,11 @@
-import { Item, Listitem, Operation } from "../../models";
+import {
+  Customer,
+  Department,
+  Employee,
+  Item,
+  Listitem,
+  Operation,
+} from "../../models";
 import { autoNoTypes, itemTypes, operationTypes } from "../../constant";
 import { getAutoNo } from "./helper";
 import { createItemKaid, createOperationKaid } from "./kaids";
@@ -346,8 +353,12 @@ export const onTaskOperationUpdate = async (taskId: any) => {
 
   if (opersations && opersations.length > 0) {
     const sortedEvents = _.sortBy(opsdata?.[operationTypes.event], "startDate");
+
     const start = sortedEvents[0].startDate;
+    start.setHours(0, 0, 0, 0);
     const end = sortedEvents[sortedEvents.length - 1].endDate;
+    end.setHours(23, 59, 59, 999);
+
     const amount = _.sumBy(sortedEvents, "amount");
     const totalinvoiced = _.sumBy(
       opsdata?.[operationTypes.salesInvoice],
@@ -378,6 +389,102 @@ export const onTaskOperationUpdate = async (taskId: any) => {
       task.status = 10;
     }
     await task.save();
+  }
+};
+export const onCustomerOperationUpdate = async (customerId: any) => {
+  const opersations = await Operation.find({ customerId });
+  const opsdata: any = _.groupBy(opersations, "opType");
+
+  if (opersations && opersations.length > 0) {
+    const sortedEvents = opsdata?.[operationTypes.event];
+    const amount = _.sumBy(sortedEvents, "amount");
+    const totalinvoiced = _.sumBy(
+      opsdata?.[operationTypes.salesInvoice],
+      "amount"
+    );
+    const totalpaid = _.sumBy(
+      opsdata?.[operationTypes.customerReceipt],
+      "amount"
+    );
+    const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
+    const evDone = sortedEvents.filter((se: any) => se.status === 10)?.length;
+    const evQty = sortedEvents.length;
+    const progress = percentage(evDone, evQty);
+
+    const customer = await Customer.findById(customerId);
+
+    customer.amount = amount;
+    customer.totalinvoiced = totalinvoiced;
+    customer.totalpaid = totalpaid;
+    customer.toatlExpenses = toatlExpenses;
+    customer.evDone = evDone;
+    customer.evQty = evQty;
+    customer.progress = parseInt(`${progress}`);
+    await customer.save();
+  }
+};
+export const onEmplyeeOperationUpdate = async (employeeId: any) => {
+  const opersations = await Operation.find({ employeeId });
+  const opsdata: any = _.groupBy(opersations, "opType");
+
+  if (opersations && opersations.length > 0) {
+    const sortedEvents = opsdata?.[operationTypes.event];
+    const amount = _.sumBy(sortedEvents, "amount");
+    const totalinvoiced = _.sumBy(
+      opsdata?.[operationTypes.salesInvoice],
+      "amount"
+    );
+    const totalpaid = _.sumBy(
+      opsdata?.[operationTypes.customerReceipt],
+      "amount"
+    );
+    const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
+    const evDone = sortedEvents.filter((se: any) => se.status === 10)?.length;
+    const evQty = sortedEvents.length;
+    const progress = percentage(evDone, evQty);
+
+    const employee = await Employee.findById(employeeId);
+
+    employee.amount = amount;
+    employee.totalinvoiced = totalinvoiced;
+    employee.totalpaid = totalpaid;
+    employee.toatlExpenses = toatlExpenses;
+    employee.evDone = evDone;
+    employee.evQty = evQty;
+    employee.progress = parseInt(`${progress}`);
+    await employee.save();
+  }
+};
+export const onDepartmentOperationUpdate = async (departmentId: any) => {
+  const opersations = await Operation.find({ departmentId });
+  const opsdata: any = _.groupBy(opersations, "opType");
+
+  if (opersations && opersations.length > 0) {
+    const sortedEvents = opsdata?.[operationTypes.event];
+    const amount = _.sumBy(sortedEvents, "amount");
+    const totalinvoiced = _.sumBy(
+      opsdata?.[operationTypes.salesInvoice],
+      "amount"
+    );
+    const totalpaid = _.sumBy(
+      opsdata?.[operationTypes.customerReceipt],
+      "amount"
+    );
+    const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
+    const evDone = sortedEvents.filter((se: any) => se.status === 10)?.length;
+    const evQty = sortedEvents.length;
+    const progress = percentage(evDone, evQty);
+    const department = await Department.findById(departmentId);
+
+    department.amount = amount;
+    department.totalinvoiced = totalinvoiced;
+    department.totalpaid = totalpaid;
+    department.toatlExpenses = toatlExpenses;
+    department.evDone = evDone;
+    department.evQty = evQty;
+    department.progress = parseInt(`${progress}`);
+
+    await department.save();
   }
 };
 export const onTaskFinanceUpdate = async (taskId: any) => {

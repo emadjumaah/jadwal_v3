@@ -87,7 +87,15 @@ export default gql`
       end: Date
       search: String
     ): ResponseWithOperations
-    getReceipts(start: Date, end: Date, search: String): ResponseWithOperations
+    getReceipts(
+      start: Date
+      end: Date
+      search: String
+      taskId: Int
+      customerId: String
+      departmentId: String
+      employeeId: String
+    ): ResponseWithOperations
     getRasseds: Response
     getSalesReport(
       itemId: String
@@ -155,6 +163,7 @@ export default gql`
       title: String
       desc: String
       customer: CustomerInput
+      employee: EmployeeInput
       department: DepartmentInput
       debitAcc: Int
       creditAcc: Int
@@ -173,6 +182,7 @@ export default gql`
       title: String
       desc: String
       customer: CustomerInput
+      employee: EmployeeInput
       department: DepartmentInput
       debitAcc: Int
       creditAcc: Int

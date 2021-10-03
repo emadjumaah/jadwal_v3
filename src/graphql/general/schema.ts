@@ -127,6 +127,16 @@ export default gql`
     color: String
     desc: String
     userId: String
+    depType: Int
+
+    amount: Float
+    totalinvoiced: Float
+    totalpaid: Float
+    toatlExpenses: Float
+
+    progress: Float
+    evQty: Int
+    evDone: Int
 
     createdAt: Date
     updatedAt: Date
@@ -141,6 +151,15 @@ export default gql`
     nameAr: String
     color: String
     resType: Int
+
+    amount: Float
+    totalinvoiced: Float
+    totalpaid: Float
+    toatlExpenses: Float
+
+    progress: Float
+    evQty: Int
+    evDone: Int
 
     phone: String
     avatar: String
@@ -188,6 +207,15 @@ export default gql`
     city: String
     address: String
     balance: Int
+
+    amount: Float
+    totalinvoiced: Float
+    totalpaid: Float
+    toatlExpenses: Float
+
+    progress: Float
+    evQty: Int
+    evDone: Int
 
     employeeId: String
     employeeName: String
@@ -350,7 +378,7 @@ export default gql`
     getBrands(isRTL: Boolean): ResponseWithBrands
     getGroups(isRTL: Boolean): ResponseWithGroups
     getDepartments(isRTL: Boolean): ResponseWithDepartments
-    getEmployees(isRTL: Boolean, resType: Int): ResponseWithEmployees
+    getEmployees(isRTL: Boolean, resTypes: [Int]): ResponseWithEmployees
     getCustomers(isRTL: Boolean): ResponseWithCustomers
     getSuppliers(isRTL: Boolean): ResponseWithSuppliers
     getItems(isRTL: Boolean): ResponseWithItems
@@ -411,6 +439,7 @@ export default gql`
       branch: String
       name: String
       nameAr: String
+      depType: Int
       desc: String
       color: String
     ): Response
@@ -419,6 +448,7 @@ export default gql`
       branch: String
       name: String
       nameAr: String
+      depType: Int
       desc: String
       color: String
     ): Response
@@ -455,6 +485,12 @@ export default gql`
       department: DepartmentInput
       daysoff: String
       info: String
+      documentNo: String
+      startDate: Date
+      endDate: Date
+      cost: Float
+      model: String
+      type: String
     ): Response
     deleteEmployee(_id: String): Response
     createCustomer(

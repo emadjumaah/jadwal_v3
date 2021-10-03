@@ -14,7 +14,16 @@ const CustomerSchema = new mongoose.Schema(
     email: { type: String },
     city: { type: String },
     address: { type: String },
+
     balance: { type: Number, default: 0 },
+
+    amount: { type: Number },
+    totalinvoiced: { type: Number },
+    totalpaid: { type: Number },
+    toatlExpenses: { type: Number },
+    progress: { type: Number, default: 0 },
+    evQty: { type: Number },
+    evDone: { type: Number },
 
     employeeId: { type: String },
     employeeName: { type: String },

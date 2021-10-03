@@ -202,7 +202,15 @@ export default gql`
   }
 
   extend type Query {
-    getInvoices(start: Date, end: Date, search: String): ResponseWithOperations
+    getInvoices(
+      start: Date
+      end: Date
+      search: String
+      taskId: Int
+      customerId: String
+      departmentId: String
+      employeeId: String
+    ): ResponseWithOperations
     getInvoicesList(
       taskId: Int
       customerId: String
