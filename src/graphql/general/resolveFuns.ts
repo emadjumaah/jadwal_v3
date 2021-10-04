@@ -428,7 +428,16 @@ export const getCompany = async () => {
 
     if (company) {
       const data = JSON.stringify({
-        ...company,
+        name: company.name,
+        nameAr: company.nameAr,
+        logo: company.logo,
+        tel1: company.tel1,
+        tel2: company.tel2,
+        fax: company.fax,
+        mob: company.mob,
+        email: company.email,
+        website: company.website,
+        address: company.address,
         appid: APP_ID,
       });
       return {
