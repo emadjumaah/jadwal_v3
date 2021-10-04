@@ -20,8 +20,11 @@ const ActionSchema = new mongoose.Schema(
     qty: { type: Number },
     address: { type: String },
 
-    eventId: { type: Number },
-    taskId: { type: Number },
+    eventId: { type: Number, index: true },
+    taskId: { type: Number, index: true },
+    employeeId: { type: String, index: true },
+    departmentId: { type: String, index: true },
+    customerId: { type: String, index: true },
 
     data: { type: String },
   },

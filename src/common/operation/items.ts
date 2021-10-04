@@ -235,6 +235,9 @@ export const createEventActions = async ({ actions, event }: any) => {
         address,
         eventId: event.id,
         taskId: event.taskId,
+        employeeId: event.employeeId,
+        departmentId: event.departmentId,
+        customerId: event.customerId,
       });
     }
     return true;
