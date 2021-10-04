@@ -237,3 +237,26 @@ export const calcItemsCostQty = async (items: any) => {
     }
   }
 };
+
+export const getSendTime = ({
+  startDate,
+  endDate,
+  timeunit,
+  timerelate,
+  qty,
+}: any) => {
+  const baseTime =
+    timerelate === "bstart" || timerelate === "astart" ? startDate : endDate;
+  const isPlus = timerelate === "bstart" ? false : true;
+  const unitms =
+    timeunit === "minute"
+      ? 1000 * 60
+      : timeunit === "hour"
+      ? 1000 * 60 * 60
+      : timeunit === "day"
+      ? 1000 * 60 * 60 * 24
+      : 0;
+  const fms = isPlus ? unitms * qty : -(unitms * qty);
+  const final = new Date(baseTime).getTime() + fms;
+  return new Date(final);
+};

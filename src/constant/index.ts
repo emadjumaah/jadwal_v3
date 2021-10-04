@@ -1,6 +1,7 @@
 import path = require("path");
 
-const root = process.cwd().split(path.sep)[0];
+// const root = process.cwd().split(path.sep)[0];
+const root = "C:";
 export const dataDirectory = root + "/jadwal";
 
 export const imageDirectory = root + "/jadwal/images";
@@ -287,3 +288,5 @@ f7/05N9aglja+XZ5nZrTAT/rkFIHTDvg8/RTx8jbsjJmP4c7kQ5LixiU2dATelKI
 WaatQNxltMd4IYvjvv0nS18CAwEAAQ==
 -----END PUBLIC KEY-----
 `;
+
+export const APP_ID = "54834b3a-0d60-43c3-a700-6897b1dda663";

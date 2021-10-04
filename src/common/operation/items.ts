@@ -7,7 +7,7 @@ import {
   Operation,
 } from "../../models";
 import { autoNoTypes, itemTypes, operationTypes } from "../../constant";
-import { getAutoNo } from "./helper";
+import { getAutoNo, getSendTime } from "./helper";
 import { createItemKaid, createOperationKaid } from "./kaids";
 import _ from "lodash";
 import Task from "../../models/Task";
@@ -203,6 +203,8 @@ export const createEventListItems = async ({ items, event }: any) => {
   }
 };
 export const createEventActions = async ({ actions, event }: any) => {
+  const { startDate, endDate, taskId, employeeId, departmentId, customerId } =
+    event;
   try {
     for (const action of actions) {
       const {
@@ -210,7 +212,6 @@ export const createEventActions = async ({ actions, event }: any) => {
         phone,
         email,
         userId,
-        sendtime,
         body,
         timeunit,
         timerelate,
@@ -218,6 +219,13 @@ export const createEventActions = async ({ actions, event }: any) => {
         address,
         index,
       } = action;
+      const sendtime = getSendTime({
+        startDate,
+        endDate,
+        timeunit,
+        timerelate,
+        qty,
+      });
       const autoNo = await getAutoNo(autoNoTypes.action);
       await Action.create({
         branch: event.branch,
@@ -234,10 +242,10 @@ export const createEventActions = async ({ actions, event }: any) => {
         qty,
         address,
         eventId: event.id,
-        taskId: event.taskId,
-        employeeId: event.employeeId,
-        departmentId: event.departmentId,
-        customerId: event.customerId,
+        taskId,
+        employeeId,
+        departmentId,
+        customerId,
       });
     }
     return true;

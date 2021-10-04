@@ -13,7 +13,12 @@ import {
   Company,
   Listitem,
 } from "../../models";
-import { autoNoTypes, eventStatus, operationTypes } from "../../constant";
+import {
+  APP_ID,
+  autoNoTypes,
+  eventStatus,
+  operationTypes,
+} from "../../constant";
 import { getAutoNo, objectFromList } from "../../common";
 import {
   calcEditedData,
@@ -420,10 +425,15 @@ export const getNoStockProducts = async (payload: any, req: any) => {
 export const getCompany = async () => {
   try {
     const company = await Company.findOne({ kind: "company" });
+
     if (company) {
+      const data = JSON.stringify({
+        ...company,
+        appid: APP_ID,
+      });
       return {
         ok: true,
-        data: JSON.stringify(company),
+        data,
         message: "success",
       };
     } else {

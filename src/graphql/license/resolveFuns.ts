@@ -2,9 +2,7 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-import { Company, User, Branch, Account, Kaid } from "../../models";
-
-import { hashPassword } from "../../common";
+import { Branch, Account, Kaid } from "../../models";
 
 export const getBranches = async () => {
   try {
