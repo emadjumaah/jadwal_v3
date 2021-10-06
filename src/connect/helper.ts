@@ -46,23 +46,28 @@ const decodeToken = async (token: any) => {
     const tokens = JSON.parse(arr[1]);
     try {
       const accessToken: any = verify(tokens.accessToken, JWT_SECRET);
-      const { _id, count, branch, systems } = accessToken;
-      const user: any = await User.findById(_id);
-
-      if (user && user.count === count && !user.block) {
-        return {
-          _id: user._id,
-          type: user.type,
-          isSuperAdmin: user.isSuperAdmin,
-          isDepartAdmin: user.isSuperAdmin,
-          roles: user.roles,
-          branch,
-          systems,
-          count: user.count,
-        };
+      if (accessToken) {
+        return accessToken;
       } else {
         return null;
       }
+      // const { _id, count, branch, systems } = accessToken;
+      // const user: any = await User.findById(_id);
+
+      // if (user && user.count === count && !user.block) {
+      //   return {
+      //     _id: user._id,
+      //     type: user.type,
+      //     isSuperAdmin: user.isSuperAdmin,
+      //     isDepartAdmin: user.isDepartAdmin,
+      //     roles: user.roles,
+      //     branch,
+      //     systems,
+      //     count: user.count,
+      //   };
+      // } else {
+      //   return null;
+      // }
     } catch (error) {
       console.log(error);
     }

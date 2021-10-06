@@ -615,6 +615,15 @@ export const createTask = async (payload: any, req: any) => {
       for (const event of allevents) {
         await createEventForTask({ eventData: event, branch, taskId: id });
       }
+      if (task.customerId) {
+        await onCustomerOperationUpdate(task.customerId);
+      }
+      if (task.employeeId) {
+        await onEmplyeeOperationUpdate(task.employeeId);
+      }
+      if (task.departmentId) {
+        await onDepartmentOperationUpdate(task.departmentId);
+      }
       task.status = 2;
       await task.save();
     }
@@ -715,6 +724,17 @@ export const deleteTask = async (payload: any) => {
       await Action.deleteMany({ taskId: id });
       await Listitem.deleteMany({ taskId: id });
       await Operation.deleteMany({ opType: operationTypes.event, taskId: id });
+
+      if (tsk.customerId) {
+        await onCustomerOperationUpdate(tsk.customerId);
+      }
+      if (tsk.employeeId) {
+        await onEmplyeeOperationUpdate(tsk.employeeId);
+      }
+      if (tsk.departmentId) {
+        await onDepartmentOperationUpdate(tsk.departmentId);
+      }
+
       await tsk.deleteOne();
       return {
         ok: true,

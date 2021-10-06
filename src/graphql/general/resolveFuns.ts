@@ -15,6 +15,7 @@ import {
 } from "../../models";
 import {
   APP_ID,
+  APP_VERSION,
   autoNoTypes,
   eventStatus,
   operationTypes,
@@ -439,6 +440,7 @@ export const getCompany = async () => {
         website: company.website,
         address: company.address,
         appid: APP_ID,
+        appversion: APP_VERSION,
       });
       return {
         ok: true,
