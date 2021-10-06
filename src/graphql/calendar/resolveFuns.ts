@@ -695,7 +695,12 @@ const hasRelatedTask = async (id: any) => {
     taskId: id,
     opType: { $ne: operationTypes.event },
   });
-  if (relatedItems?.length > 0) {
+  const doneEvents = await Operation.find({
+    taskId: id,
+    opType: operationTypes.event,
+    status: 10,
+  });
+  if (relatedItems?.length > 0 || doneEvents?.length > 0) {
     return true;
   }
 
