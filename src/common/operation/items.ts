@@ -355,22 +355,47 @@ export const getOldOperationItems = async (opId: any) => {
 };
 
 function percentage(partialValue: any, totalValue: any) {
+  if (partialValue === 0 || totalValue === 0) return 0;
   return (100 * partialValue) / totalValue;
 }
 
 export const onTaskOperationUpdate = async (taskId: any) => {
   const opersations = await Operation.find({ taskId });
   const opsdata: any = _.groupBy(opersations, "opType");
+  const task = await Task.findOne({ id: taskId });
 
   if (opersations && opersations.length > 0) {
-    const sortedEvents = _.sortBy(opsdata?.[operationTypes.event], "startDate");
-
-    const start = sortedEvents[0].startDate;
-    start.setHours(0, 0, 0, 0);
-    const end = sortedEvents[sortedEvents.length - 1].endDate;
-    end.setHours(23, 59, 59, 999);
-
-    const amount = _.sumBy(sortedEvents, "amount");
+    const evs = opsdata?.[operationTypes.event];
+    if (evs?.length > 0) {
+      const sortedEvents = _.sortBy(
+        opsdata?.[operationTypes.event],
+        "startDate"
+      );
+      const start = sortedEvents[0].startDate;
+      start.setHours(0, 0, 0, 0);
+      const end = sortedEvents[sortedEvents.length - 1].endDate;
+      end.setHours(23, 59, 59, 999);
+      const amount = _.sumBy(sortedEvents, "amount");
+      const evDone = sortedEvents.filter((se: any) => se.status === 10)?.length;
+      const evQty = sortedEvents.length;
+      const progress = percentage(evDone, evQty);
+      const status = evDone === evQty ? 10 : 2;
+      task.start = start;
+      task.end = end;
+      task.evDone = evDone;
+      task.evQty = evQty;
+      task.progress = parseInt(`${progress}`);
+      task.amount = amount ? amount : 0;
+      task.status = status;
+      if (evDone === evQty) {
+        task.status = 10;
+      }
+    } else {
+      task.evDone = 0;
+      task.evQty = 0;
+      task.progress = 0;
+      task.amount = 0;
+    }
     const totalinvoiced = _.sumBy(
       opsdata?.[operationTypes.salesInvoice],
       "amount"
@@ -380,35 +405,43 @@ export const onTaskOperationUpdate = async (taskId: any) => {
       "amount"
     );
     const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
-    const evDone = sortedEvents.filter((se: any) => se.status === 10)?.length;
-    const evQty = sortedEvents.length;
-    const progress = percentage(evDone, evQty);
-    const status = evDone === evQty ? 10 : 2;
-    const task = await Task.findOne({ id: taskId });
-    task.start = start;
-    task.end = end;
-    task.evDone = evDone;
-    task.evQty = evQty;
-    task.progress = parseInt(`${progress}`);
-
-    task.amount = amount;
-    task.totalinvoiced = totalinvoiced;
-    task.totalpaid = totalpaid;
-    task.toatlExpenses = toatlExpenses;
-    task.status = status;
-    if (evDone === evQty) {
-      task.status = 10;
-    }
+    task.totalinvoiced = totalinvoiced ? totalinvoiced : 0;
+    task.totalpaid = totalpaid ? totalpaid : 0;
+    task.toatlExpenses = toatlExpenses ? toatlExpenses : 0;
+    await task.save();
+  } else {
+    task.evDone = 0;
+    task.evQty = 0;
+    task.progress = 0;
+    task.amount = 0;
+    task.totalinvoiced = 0;
+    task.totalpaid = 0;
+    task.toatlExpenses = 0;
     await task.save();
   }
 };
 export const onCustomerOperationUpdate = async (customerId: any) => {
   const opersations = await Operation.find({ customerId });
   const opsdata: any = _.groupBy(opersations, "opType");
+  const customer = await Customer.findById(customerId);
 
   if (opersations && opersations.length > 0) {
-    const sortedEvents = opsdata?.[operationTypes.event];
-    const amount = _.sumBy(sortedEvents, "amount");
+    const evs = opsdata?.[operationTypes.event];
+    if (evs?.length > 0) {
+      const amount = _.sumBy(evs, "amount");
+      const evDone = evs.filter((se: any) => se.status === 10)?.length;
+      const evQty = evs.length;
+      const progress = percentage(evDone, evQty);
+      customer.evDone = evDone;
+      customer.evQty = evQty;
+      customer.progress = parseInt(`${progress}`);
+      customer.amount = amount ? amount : 0;
+    } else {
+      customer.evDone = 0;
+      customer.evQty = 0;
+      customer.progress = 0;
+      customer.amount = 0;
+    }
     const totalinvoiced = _.sumBy(
       opsdata?.[operationTypes.salesInvoice],
       "amount"
@@ -418,29 +451,43 @@ export const onCustomerOperationUpdate = async (customerId: any) => {
       "amount"
     );
     const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
-    const evDone = sortedEvents.filter((se: any) => se.status === 10)?.length;
-    const evQty = sortedEvents.length;
-    const progress = percentage(evDone, evQty);
-
-    const customer = await Customer.findById(customerId);
-
-    customer.amount = amount;
-    customer.totalinvoiced = totalinvoiced;
-    customer.totalpaid = totalpaid;
-    customer.toatlExpenses = toatlExpenses;
-    customer.evDone = evDone;
-    customer.evQty = evQty;
-    customer.progress = parseInt(`${progress}`);
+    customer.totalinvoiced = totalinvoiced ? totalinvoiced : 0;
+    customer.totalpaid = totalpaid ? totalpaid : 0;
+    customer.toatlExpenses = toatlExpenses ? toatlExpenses : 0;
+    await customer.save();
+  } else {
+    customer.amount = 0;
+    customer.totalinvoiced = 0;
+    customer.totalpaid = 0;
+    customer.toatlExpenses = 0;
+    customer.evDone = 0;
+    customer.evQty = 0;
+    customer.progress = 0;
     await customer.save();
   }
 };
 export const onEmplyeeOperationUpdate = async (employeeId: any) => {
   const opersations = await Operation.find({ employeeId });
   const opsdata: any = _.groupBy(opersations, "opType");
+  const employee = await Employee.findById(employeeId);
 
   if (opersations && opersations.length > 0) {
-    const sortedEvents = opsdata?.[operationTypes.event];
-    const amount = _.sumBy(sortedEvents, "amount");
+    const evs = opsdata?.[operationTypes.event];
+    if (evs?.length > 0) {
+      const amount = _.sumBy(evs, "amount");
+      const evDone = evs.filter((se: any) => se.status === 10)?.length;
+      const evQty = evs.length;
+      const progress = percentage(evDone, evQty);
+      employee.amount = amount ? amount : 0;
+      employee.evDone = evDone;
+      employee.evQty = evQty;
+      employee.progress = parseInt(`${progress}`);
+    } else {
+      employee.evDone = 0;
+      employee.evQty = 0;
+      employee.progress = 0;
+      employee.amount = 0;
+    }
     const totalinvoiced = _.sumBy(
       opsdata?.[operationTypes.salesInvoice],
       "amount"
@@ -450,29 +497,45 @@ export const onEmplyeeOperationUpdate = async (employeeId: any) => {
       "amount"
     );
     const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
-    const evDone = sortedEvents.filter((se: any) => se.status === 10)?.length;
-    const evQty = sortedEvents.length;
-    const progress = percentage(evDone, evQty);
-
-    const employee = await Employee.findById(employeeId);
-
-    employee.amount = amount;
-    employee.totalinvoiced = totalinvoiced;
-    employee.totalpaid = totalpaid;
-    employee.toatlExpenses = toatlExpenses;
-    employee.evDone = evDone;
-    employee.evQty = evQty;
-    employee.progress = parseInt(`${progress}`);
+    employee.totalinvoiced = totalinvoiced ? totalinvoiced : 0;
+    employee.totalpaid = totalpaid ? totalpaid : 0;
+    employee.toatlExpenses = toatlExpenses ? toatlExpenses : 0;
+    await employee.save();
+  } else {
+    employee.amount = 0;
+    employee.totalinvoiced = 0;
+    employee.totalpaid = 0;
+    employee.toatlExpenses = 0;
+    employee.evDone = 0;
+    employee.evQty = 0;
+    employee.progress = 0;
     await employee.save();
   }
 };
+
 export const onDepartmentOperationUpdate = async (departmentId: any) => {
   const opersations = await Operation.find({ departmentId });
   const opsdata: any = _.groupBy(opersations, "opType");
+  const department = await Department.findById(departmentId);
 
   if (opersations && opersations.length > 0) {
-    const sortedEvents = opsdata?.[operationTypes.event];
-    const amount = _.sumBy(sortedEvents, "amount");
+    const evs = opsdata?.[operationTypes.event];
+    if (evs?.length > 0) {
+      const amount = _.sumBy(evs, "amount");
+      const evDone = evs.filter((se: any) => se.status === 10)?.length;
+      const evQty = evs.length;
+      const progress = percentage(evDone, evQty);
+      department.evDone = evDone;
+      department.evQty = evQty;
+      department.progress = parseInt(`${progress}`);
+      department.amount = amount ? amount : 0;
+    } else {
+      department.evDone = 0;
+      department.evQty = 0;
+      department.progress = 0;
+      department.amount = 0;
+    }
+
     const totalinvoiced = _.sumBy(
       opsdata?.[operationTypes.salesInvoice],
       "amount"
@@ -482,90 +545,19 @@ export const onDepartmentOperationUpdate = async (departmentId: any) => {
       "amount"
     );
     const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
-    const evDone = sortedEvents.filter((se: any) => se.status === 10)?.length;
-    const evQty = sortedEvents.length;
-    const progress = percentage(evDone, evQty);
-    const department = await Department.findById(departmentId);
+    department.totalinvoiced = totalinvoiced ? totalinvoiced : 0;
+    department.totalpaid = totalpaid ? totalpaid : 0;
+    department.toatlExpenses = toatlExpenses ? toatlExpenses : 0;
 
-    department.amount = amount;
-    department.totalinvoiced = totalinvoiced;
-    department.totalpaid = totalpaid;
-    department.toatlExpenses = toatlExpenses;
-    department.evDone = evDone;
-    department.evQty = evQty;
-    department.progress = parseInt(`${progress}`);
-
+    await department.save();
+  } else {
+    department.amount = 0;
+    department.totalinvoiced = 0;
+    department.totalpaid = 0;
+    department.toatlExpenses = 0;
+    department.evDone = 0;
+    department.evQty = 0;
+    department.progress = 0;
     await department.save();
   }
 };
-export const onTaskFinanceUpdate = async (taskId: any) => {
-  const opersations = await Operation.find({ taskId });
-  const opsdata: any = _.groupBy(opersations, "opType");
-
-  if (opersations && opersations.length > 0) {
-    const amount = _.sumBy(opsdata?.[operationTypes.event], "amount");
-    const totalinvoiced = _.sumBy(
-      opsdata?.[operationTypes.salesInvoice],
-      "amount"
-    );
-    const totalpaid = _.sumBy(
-      opsdata?.[operationTypes.customerReceipt],
-      "amount"
-    );
-    const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
-
-    const task = await Task.findOne({ id: taskId });
-    task.amount = amount;
-    task.totalinvoiced = totalinvoiced;
-    task.totalpaid = totalpaid;
-    task.toatlExpenses = toatlExpenses;
-    await task.save();
-  }
-};
-export const onTaskEventUpdate = async (taskId: any) => {
-  const events = await Operation.find({ taskId, opType: operationTypes.event });
-
-  if (events && events.length > 0) {
-    const sortedEvents = _.sortBy(events, "startDate");
-    const start = sortedEvents[0].startDate;
-    const end = sortedEvents[sortedEvents.length - 1].endDate;
-    const evDone = sortedEvents.filter((se: any) => se.status === 10)?.length;
-    const evQty = sortedEvents.length;
-    const progress = percentage(evDone, evQty);
-
-    const task = await Task.findOne({ id: taskId });
-    task.start = start;
-    task.end = end;
-    task.evDone = evDone;
-    task.evQty = evQty;
-    task.progress = parseInt(`${progress}`);
-    if (evDone === evQty) {
-      task.status = 10;
-    }
-    await task.save();
-  }
-};
-// export const onTaskFinanceUpdate = async (id: any) => {
-//   const task = await Task.findOne({ id });
-
-//   const sales = await Operation.find({
-//     opType: operationTypes.salesInvoice,
-//     taskId: id,
-//   });
-//   const recipts = await Operation.find({
-//     opType: operationTypes.customerReceipt,
-//     taskId: id,
-//   });
-//   let totalinvoiced = 0;
-//   let totalpaid = 0;
-//   if (sales && sales.length > 0) {
-//     totalinvoiced = _.sumBy(sales, "amount");
-//   }
-//   if (recipts && recipts.length > 0) {
-//     totalpaid = _.sumBy(recipts, "amount");
-//   }
-
-//   task.totalinvoiced = totalinvoiced;
-//   task.totalpaid = totalpaid;
-//   await task.save();
-// };

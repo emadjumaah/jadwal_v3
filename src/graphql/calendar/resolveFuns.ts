@@ -615,17 +615,18 @@ export const createTask = async (payload: any, req: any) => {
       for (const event of allevents) {
         await createEventForTask({ eventData: event, branch, taskId: id });
       }
-      if (task.customerId) {
-        await onCustomerOperationUpdate(task.customerId);
-      }
-      if (task.employeeId) {
-        await onEmplyeeOperationUpdate(task.employeeId);
-      }
-      if (task.departmentId) {
-        await onDepartmentOperationUpdate(task.departmentId);
-      }
       task.status = 2;
       await task.save();
+    }
+
+    if (task.customerId) {
+      await onCustomerOperationUpdate(task.customerId);
+    }
+    if (task.employeeId) {
+      await onEmplyeeOperationUpdate(task.employeeId);
+    }
+    if (task.departmentId) {
+      await onDepartmentOperationUpdate(task.departmentId);
     }
 
     return {
@@ -729,6 +730,59 @@ export const deleteTask = async (payload: any) => {
       await Action.deleteMany({ taskId: id });
       await Listitem.deleteMany({ taskId: id });
       await Operation.deleteMany({ opType: operationTypes.event, taskId: id });
+
+      if (tsk.customerId) {
+        await onCustomerOperationUpdate(tsk.customerId);
+      }
+      if (tsk.employeeId) {
+        await onEmplyeeOperationUpdate(tsk.employeeId);
+      }
+      if (tsk.departmentId) {
+        await onDepartmentOperationUpdate(tsk.departmentId);
+      }
+
+      await tsk.deleteOne();
+      return {
+        ok: true,
+        message: "deleteItem",
+      };
+    }
+  } catch (error) {
+    console.log("ERROR deleteItem");
+    console.log(error);
+    return {
+      ok: false,
+      message: "ERROR deleteItem",
+      error,
+    };
+  }
+};
+export const deleteTaskById = async (payload: any) => {
+  const { _id } = payload;
+  try {
+    const tsk: any = await Task.findById(_id);
+    if (!tsk) {
+      return {
+        ok: false,
+        message: "Error",
+        error: "Not Found",
+      };
+    } else {
+      const isRelated = await hasRelatedTask(tsk.id);
+      if (isRelated === true) {
+        return {
+          ok: false,
+          message: "Error",
+          error: "Item has related",
+        };
+      }
+
+      await Action.deleteMany({ taskId: tsk.id });
+      await Listitem.deleteMany({ taskId: tsk.id });
+      await Operation.deleteMany({
+        opType: operationTypes.event,
+        taskId: tsk.id,
+      });
 
       if (tsk.customerId) {
         await onCustomerOperationUpdate(tsk.customerId);
@@ -1062,59 +1116,6 @@ export const deleteEventById = async (payload: any) => {
         await onDepartmentOperationUpdate(evn.departmentId);
       }
       await evn.deleteOne();
-      return {
-        ok: true,
-        message: "deleteItem",
-      };
-    }
-  } catch (error) {
-    console.log("ERROR deleteItem");
-    console.log(error);
-    return {
-      ok: false,
-      message: "ERROR deleteItem",
-      error,
-    };
-  }
-};
-export const deleteTaskById = async (payload: any) => {
-  const { _id } = payload;
-  try {
-    const tsk: any = await Task.findById(_id);
-    if (!tsk) {
-      return {
-        ok: false,
-        message: "Error",
-        error: "Not Found",
-      };
-    } else {
-      const isRelated = await hasRelatedTask(tsk.id);
-      if (isRelated === true) {
-        return {
-          ok: false,
-          message: "Error",
-          error: "Item has related",
-        };
-      }
-
-      await Action.deleteMany({ taskId: tsk.id });
-      await Listitem.deleteMany({ taskId: tsk.id });
-      await Operation.deleteMany({
-        opType: operationTypes.event,
-        taskId: tsk.id,
-      });
-
-      if (tsk.customerId) {
-        await onCustomerOperationUpdate(tsk.customerId);
-      }
-      if (tsk.employeeId) {
-        await onEmplyeeOperationUpdate(tsk.employeeId);
-      }
-      if (tsk.departmentId) {
-        await onDepartmentOperationUpdate(tsk.departmentId);
-      }
-
-      await tsk.deleteOne();
       return {
         ok: true,
         message: "deleteItem",
