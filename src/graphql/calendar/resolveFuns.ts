@@ -1063,6 +1063,8 @@ export const deleteEvent = async (payload: any) => {
     } else {
       await Listitem.deleteMany({ eventId: id });
       await Action.deleteMany({ eventId: id });
+      await evn.deleteOne();
+
       if (taskId) {
         await onTaskOperationUpdate(taskId);
       }
@@ -1075,7 +1077,6 @@ export const deleteEvent = async (payload: any) => {
       if (evn.departmentId) {
         await onDepartmentOperationUpdate(evn.departmentId);
       }
-      await evn.deleteOne();
       return {
         ok: true,
         message: "deleteItem",
@@ -1103,6 +1104,9 @@ export const deleteEventById = async (payload: any) => {
       };
     } else {
       await Listitem.deleteMany({ eventId: evn.id });
+      await Action.deleteMany({ eventId: evn.id });
+      await evn.deleteOne();
+
       if (evn.taskId) {
         await onTaskOperationUpdate(evn.taskId);
       }
@@ -1115,7 +1119,6 @@ export const deleteEventById = async (payload: any) => {
       if (evn.departmentId) {
         await onDepartmentOperationUpdate(evn.departmentId);
       }
-      await evn.deleteOne();
       return {
         ok: true,
         message: "deleteItem",
