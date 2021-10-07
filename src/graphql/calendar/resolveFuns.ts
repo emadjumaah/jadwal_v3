@@ -161,7 +161,7 @@ export const getObjectEvents = async (payload: any) => {
 
 export const getTaskItems = async (payload: any) => {
   const { taskId } = payload;
-  const items = await Listitem.find({ taskId });
+  const items = await Listitem.find({ taskId, opType: operationTypes.event });
   if (items) {
     return {
       ok: true,

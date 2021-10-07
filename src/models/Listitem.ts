@@ -31,7 +31,7 @@ const ListItemSchema = new mongoose.Schema(
     itemPhoto: { type: String },
 
     opId: { type: String },
-    opType: { type: Number },
+    opType: { type: Number, index: true },
     opTime: { type: Date, index: true },
     opDocNo: { type: String },
     eventId: { type: Number, index: true },
