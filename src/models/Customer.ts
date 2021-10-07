@@ -21,6 +21,7 @@ const CustomerSchema = new mongoose.Schema(
     totalinvoiced: { type: Number },
     totalpaid: { type: Number },
     toatlExpenses: { type: Number },
+    totalDiscount: { type: Number },
     progress: { type: Number, default: 0 },
     evQty: { type: Number },
     evDone: { type: Number },

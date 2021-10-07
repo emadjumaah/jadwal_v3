@@ -159,11 +159,15 @@ export const getGroups = async (payload: any, req: any) => {
 export const getDepartments = async (payload: any, req: any) => {
   const { user } = req;
   const { branch } = user;
-  const { isRTL } = payload;
+  const { isRTL, depType } = payload;
 
   try {
     const fieldName = isRTL ? "nameAr" : "name";
-    const deps = await Department.find({ branch }).sort({
+    const options: any = { branch };
+    if (depType) {
+      options.depType = depType;
+    }
+    const deps = await Department.find(options).sort({
       [fieldName]: 1,
     });
     if (deps) {
@@ -192,13 +196,16 @@ export const getDepartments = async (payload: any, req: any) => {
 export const getEmployees = async (payload: any, req: any) => {
   const { user } = req;
   const { branch } = user;
-  const { isRTL, resTypes } = payload;
+  const { isRTL, resType, resKind } = payload;
 
   try {
     const fieldName = isRTL ? "nameAr" : "name";
     const options: any = { branch };
-    if (resTypes) {
-      options.resType = { $in: resTypes };
+    if (resKind) {
+      options.resKind = resKind;
+    }
+    if (resType) {
+      options.resType = resType;
     }
     const empl = await Employee.find(options).sort({
       [fieldName]: 1,

@@ -131,6 +131,7 @@ export default gql`
 
     amount: Float
     totalinvoiced: Float
+    totalDiscount: Float
     totalpaid: Float
     toatlExpenses: Float
 
@@ -150,10 +151,12 @@ export default gql`
     name: String
     nameAr: String
     color: String
+    resKind: Int
     resType: Int
 
     amount: Float
     totalinvoiced: Float
+    totalDiscount: Float
     totalpaid: Float
     toatlExpenses: Float
 
@@ -210,6 +213,7 @@ export default gql`
 
     amount: Float
     totalinvoiced: Float
+    totalDiscount: Float
     totalpaid: Float
     toatlExpenses: Float
 
@@ -377,8 +381,12 @@ export default gql`
     getCategories(isRTL: Boolean): ResponseWithCategories
     getBrands(isRTL: Boolean): ResponseWithBrands
     getGroups(isRTL: Boolean): ResponseWithGroups
-    getDepartments(isRTL: Boolean): ResponseWithDepartments
-    getEmployees(isRTL: Boolean, resTypes: [Int]): ResponseWithEmployees
+    getDepartments(isRTL: Boolean, depType: Int): ResponseWithDepartments
+    getEmployees(
+      isRTL: Boolean
+      resKind: Int
+      resType: Int
+    ): ResponseWithEmployees
     getCustomers(isRTL: Boolean): ResponseWithCustomers
     getSuppliers(isRTL: Boolean): ResponseWithSuppliers
     getItems(isRTL: Boolean): ResponseWithItems
@@ -458,6 +466,7 @@ export default gql`
       name: String
       nameAr: String
       color: String
+      resKind: Int
       resType: Int
       phone: String
       email: String
@@ -478,6 +487,7 @@ export default gql`
       name: String
       nameAr: String
       color: String
+      resKind: Int
       resType: Int
       phone: String
       email: String

@@ -72,6 +72,7 @@ export default gql`
 
     amount: Float
     totalinvoiced: Float
+    totalDiscount: Float
     totalpaid: Float
     toatlExpenses: Float
 

@@ -295,6 +295,8 @@ export const deleteOperation = async (opId: any) => {
     }
     await Kaid.deleteMany({ opId });
     await Listitem.deleteMany({ opId });
+    await operation.deleteOne();
+
     if (taskId) {
       await onTaskOperationUpdate(taskId);
     }
@@ -307,7 +309,6 @@ export const deleteOperation = async (opId: any) => {
     if (operation.departmentId) {
       await onDepartmentOperationUpdate(operation.departmentId);
     }
-    await operation.deleteOne();
   } catch (error) {
     console.log(error);
     return null;

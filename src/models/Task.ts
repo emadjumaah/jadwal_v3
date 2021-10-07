@@ -33,6 +33,7 @@ const TaskSchema = new mongoose.Schema(
     totalinvoiced: { type: Number },
     totalpaid: { type: Number },
     toatlExpenses: { type: Number },
+    totalDiscount: { type: Number },
 
     customerId: { type: String },
     customerName: { type: String },

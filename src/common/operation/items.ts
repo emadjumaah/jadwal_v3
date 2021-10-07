@@ -400,14 +400,19 @@ export const onTaskOperationUpdate = async (taskId: any) => {
       opsdata?.[operationTypes.salesInvoice],
       "amount"
     );
+    const totalDiscount = _.sumBy(
+      opsdata?.[operationTypes.customerDiscount],
+      "amount"
+    );
     const totalpaid = _.sumBy(
       opsdata?.[operationTypes.customerReceipt],
       "amount"
     );
     const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
-    task.totalinvoiced = totalinvoiced ? totalinvoiced : 0;
-    task.totalpaid = totalpaid ? totalpaid : 0;
-    task.toatlExpenses = toatlExpenses ? toatlExpenses : 0;
+    task.totalinvoiced = totalinvoiced;
+    task.totalDiscount = totalDiscount;
+    task.totalpaid = totalpaid;
+    task.toatlExpenses = toatlExpenses;
     await task.save();
   } else {
     task.evDone = 0;
@@ -415,6 +420,7 @@ export const onTaskOperationUpdate = async (taskId: any) => {
     task.progress = 0;
     task.amount = 0;
     task.totalinvoiced = 0;
+    task.totalDiscount = 0;
     task.totalpaid = 0;
     task.toatlExpenses = 0;
     await task.save();
@@ -446,18 +452,25 @@ export const onCustomerOperationUpdate = async (customerId: any) => {
       opsdata?.[operationTypes.salesInvoice],
       "amount"
     );
+    const totalDiscount = _.sumBy(
+      opsdata?.[operationTypes.customerDiscount],
+      "amount"
+    );
     const totalpaid = _.sumBy(
       opsdata?.[operationTypes.customerReceipt],
       "amount"
     );
     const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
-    customer.totalinvoiced = totalinvoiced ? totalinvoiced : 0;
-    customer.totalpaid = totalpaid ? totalpaid : 0;
-    customer.toatlExpenses = toatlExpenses ? toatlExpenses : 0;
+
+    customer.totalinvoiced = totalinvoiced;
+    customer.totalDiscount = totalDiscount;
+    customer.totalpaid = totalpaid;
+    customer.toatlExpenses = toatlExpenses;
     await customer.save();
   } else {
     customer.amount = 0;
     customer.totalinvoiced = 0;
+    customer.totalDiscount = 0;
     customer.totalpaid = 0;
     customer.toatlExpenses = 0;
     customer.evDone = 0;
@@ -492,18 +505,24 @@ export const onEmplyeeOperationUpdate = async (employeeId: any) => {
       opsdata?.[operationTypes.salesInvoice],
       "amount"
     );
+    const totalDiscount = _.sumBy(
+      opsdata?.[operationTypes.customerDiscount],
+      "amount"
+    );
     const totalpaid = _.sumBy(
       opsdata?.[operationTypes.customerReceipt],
       "amount"
     );
     const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
-    employee.totalinvoiced = totalinvoiced ? totalinvoiced : 0;
-    employee.totalpaid = totalpaid ? totalpaid : 0;
-    employee.toatlExpenses = toatlExpenses ? toatlExpenses : 0;
+    employee.totalinvoiced = totalinvoiced;
+    employee.totalDiscount = totalDiscount;
+    employee.totalpaid = totalpaid;
+    employee.toatlExpenses = toatlExpenses;
     await employee.save();
   } else {
     employee.amount = 0;
     employee.totalinvoiced = 0;
+    employee.totalDiscount = 0;
     employee.totalpaid = 0;
     employee.toatlExpenses = 0;
     employee.evDone = 0;
@@ -540,19 +559,25 @@ export const onDepartmentOperationUpdate = async (departmentId: any) => {
       opsdata?.[operationTypes.salesInvoice],
       "amount"
     );
+    const totalDiscount = _.sumBy(
+      opsdata?.[operationTypes.customerDiscount],
+      "amount"
+    );
     const totalpaid = _.sumBy(
       opsdata?.[operationTypes.customerReceipt],
       "amount"
     );
     const toatlExpenses = _.sumBy(opsdata?.[operationTypes.expenses], "amount");
-    department.totalinvoiced = totalinvoiced ? totalinvoiced : 0;
-    department.totalpaid = totalpaid ? totalpaid : 0;
-    department.toatlExpenses = toatlExpenses ? toatlExpenses : 0;
+    department.totalinvoiced = totalinvoiced;
+    department.totalDiscount = totalDiscount;
+    department.totalpaid = totalpaid;
+    department.toatlExpenses = toatlExpenses;
 
     await department.save();
   } else {
     department.amount = 0;
     department.totalinvoiced = 0;
+    department.totalDiscount = 0;
     department.totalpaid = 0;
     department.toatlExpenses = 0;
     department.evDone = 0;

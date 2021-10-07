@@ -6,7 +6,8 @@ const EmployeeSchema = new mongoose.Schema(
     branch: { type: String, index: true }, // branch basename
     autoNo: { type: Number, unique: true }, // all no are starts from 1 and grow => 2, 3, 4 ...
     docNo: { type: String, unique: true },
-    resType: { type: Number, index: true }, // 1:managment, 2: operational, 3: material machine or flat,
+    resKind: { type: Number, index: true }, // 1:person, 2: machein/car,
+    resType: { type: Number, index: true }, // 1:managment, 2: operational,
     name: { type: String },
     nameAr: { type: String },
     phone: { type: String },
@@ -24,6 +25,7 @@ const EmployeeSchema = new mongoose.Schema(
     totalinvoiced: { type: Number },
     totalpaid: { type: Number },
     toatlExpenses: { type: Number },
+    totalDiscount: { type: Number },
     progress: { type: Number, default: 0 },
     evQty: { type: Number },
     evDone: { type: Number },
