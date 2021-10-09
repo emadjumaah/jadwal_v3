@@ -28,23 +28,39 @@ export const createToken = ({
   roles,
   branch,
   systems,
-  // expiresIn,
+  expiresIn,
   count,
 }: any) => {
-  return jwt.sign(
-    {
-      _id,
-      type,
-      isSuperAdmin: isSuperAdmin ? isSuperAdmin : false,
-      isDepartAdmin: isDepartAdmin ? isDepartAdmin : false,
-      roles: roles ? JSON.parse(roles) : "",
-      branch: branch ? branch : "",
-      systems: systems ? systems : "",
-      count,
-    },
-    JWT_SECRET
-    // {
-    //   expiresIn,
-    // }
-  );
+  if (expiresIn) {
+    return jwt.sign(
+      {
+        _id,
+        type,
+        isSuperAdmin: isSuperAdmin ? isSuperAdmin : false,
+        isDepartAdmin: isDepartAdmin ? isDepartAdmin : false,
+        roles: roles ? JSON.parse(roles) : "",
+        branch: branch ? branch : "",
+        systems: systems ? systems : "",
+        count,
+      },
+      JWT_SECRET,
+      {
+        expiresIn,
+      }
+    );
+  } else {
+    return jwt.sign(
+      {
+        _id,
+        type,
+        isSuperAdmin: isSuperAdmin ? isSuperAdmin : false,
+        isDepartAdmin: isDepartAdmin ? isDepartAdmin : false,
+        roles: roles ? JSON.parse(roles) : "",
+        branch: branch ? branch : "",
+        systems: systems ? systems : "",
+        count,
+      },
+      JWT_SECRET
+    );
+  }
 };

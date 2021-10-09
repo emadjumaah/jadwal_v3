@@ -290,4 +290,4 @@ WaatQNxltMd4IYvjvv0nS18CAwEAAQ==
 `;
 
 export const APP_ID = "54834b3a-0d60-43c3-a700-6897b1dda663";
-export const APP_VERSION = "3.0.8";
+export const APP_VERSION = "3.0.9";
